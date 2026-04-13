@@ -5,21 +5,33 @@ import { motion, AnimatePresence } from "framer-motion";
 import Image from "next/image";
 
 export default function HeroSection({ onCta }: { onCta: () => void }) {
-  // stage 0: logo center, bg black
-  // stage 1: logo moving up, bg image appearing
   const [stage, setStage] = useState(0);
 
   useEffect(() => {
+    const KEY = "bgsc-hero-animation";
+    const ONE_WEEK = 7 * 24 * 60 * 60 * 1000;
+
+    const now = Date.now();
+    const lastSeen = localStorage.getItem(KEY);
+
+    const shouldAnimate =
+      !lastSeen || now - parseInt(lastSeen, 10) > ONE_WEEK;
+
+    if (!shouldAnimate) {
+      setStage(1);
+      document.body.style.overflow = "auto";
+      return;
+    }
+
     document.body.style.overflow = "hidden";
-    
-    // Move logo up after 2 seconds
+
     const timer1 = setTimeout(() => {
       setStage(1);
     }, 2000);
 
-    // Re-enable scroll after animation finishes
     const timer2 = setTimeout(() => {
       document.body.style.overflow = "auto";
+      localStorage.setItem(KEY, now.toString());
     }, 3500);
 
     return () => {
@@ -127,7 +139,7 @@ export default function HeroSection({ onCta }: { onCta: () => void }) {
               </div>
               
               <div className="absolute transition-all duration-500 ease-[cubic-bezier(0.85,0,0.15,1)] scale-50 opacity-0 group-hover:scale-100 group-hover:opacity-100 flex items-center justify-center gap-3 uppercase font-black text-[10px] md:text-xs tracking-[0.3em] whitespace-nowrap">
-                <span>Start Now</span>
+                <span>Start Free</span>
               </div>
             </div>
 

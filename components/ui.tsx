@@ -19,7 +19,7 @@ export function Eyebrow({ children, className }: { children: React.ReactNode; cl
 export function Display({ children, className }: { children: React.ReactNode; className?: string }) {
   return (
     <h2 className={cn("font-black uppercase leading-none tracking-tight", className)}
-        style={{ fontFamily: "var(--font-display, 'Poppins', sans-serif)", color: "#FFFFFF" }}>
+        style={{ fontFamily: "var(--font-display, 'Poppins', sans-serif)", color: "#F5F5F3" }}>
       {children}
     </h2>
   );

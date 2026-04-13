@@ -9,6 +9,7 @@ import ProblemSection from "@/components/ProblemSection";
 import StandardSection from "@/components/StandardSection";
 import MethodSection from "@/components/MethodSection";
 import CultureSection from "@/components/CultureSection";
+import Stats from "@/components/stats";
 import ObjectionsSection from "@/components/ObjectionsSection";
 import CloseSection from "@/components/CloseSection";
 import StickyCtaBar from "@/components/StickyCtaBar";
@@ -35,6 +36,8 @@ export default function VSLPage() {
       <MethodSection />
       <div className="section-divider" />
       <CultureSection />
+      <div className="section-divider" />
+      <Stats />
       <div className="section-divider" />
       <ObjectionsSection />
       <div className="section-divider" />

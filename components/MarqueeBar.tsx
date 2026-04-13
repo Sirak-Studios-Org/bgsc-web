@@ -10,7 +10,7 @@ function Track({ hidden }: { hidden?: boolean }) {
     <div className="marquee-track" aria-hidden={hidden}>
       {WORDS.map((w, i) => (
         <span key={i}
-          className="text-xs font-bold uppercase tracking-[0.35em] py-px mx-8 flex-shrink-0"
+          className="text-xs font-bold uppercase tracking-[0.35em] py-px mx-8 shrink-0"
           style={{
             fontFamily: "var(--font-display, 'Poppins', sans-serif)",
             color: "#FFFFFF",

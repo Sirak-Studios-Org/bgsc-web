@@ -75,7 +75,7 @@ export default function SignupModal({ open, onClose }: Props) {
               {/* Close */}
               {step === "form" && (
                 <button onClick={reset}
-                  className="absolute top-4 right-5 text-lg leading-none hover:opacity-60 transition-opacity"
+                  className="absolute top-4 right-5 text-lg leading-none hover:opacity-60 transition-opacity cursor-pointer"
                   style={{ color: "rgba(255,255,255,0.4)" }}>✕</button>
               )}
 
@@ -84,7 +84,7 @@ export default function SignupModal({ open, onClose }: Props) {
                   <motion.div key="form" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}>
 
                     <div className="flex justify-center mb-7">
-                      <Image src="/images/bgsc-logo.png" alt="BGSC" width={140} height={48} className="w-28 h-auto" />
+                      <Image src="/images/bgsc-logo.png" alt="BGSC" width={140} height={48} className="w-28 h-auto select-none pointer-events-none" />
                     </div>
 
                     <h2 className="text-xl md:text-2xl font-black uppercase leading-tight text-center mb-2"
@@ -99,7 +99,7 @@ export default function SignupModal({ open, onClose }: Props) {
                     <form onSubmit={handleSubmit} className="space-y-4">
                       <div>
                         <label className="block text-xs uppercase tracking-widest mb-1.5"
-                          style={{ color: "rgba(255,255,255,0.4)", fontFamily: "var(--font-display)" }}>Full Name</label>
+                          style={{ color: "rgba(255,255,255,0.4)", fontFamily: "var(--font-display)" }}>Full Name *</label>
                         <input type="text" required value={name}
                           onChange={e => setName(e.target.value)}
                           className="w-full px-4 py-3 text-sm bg-transparent border outline-none"
@@ -108,7 +108,7 @@ export default function SignupModal({ open, onClose }: Props) {
                       </div>
                       <div>
                         <label className="block text-xs uppercase tracking-widest mb-1.5"
-                          style={{ color: "rgba(255,255,255,0.4)", fontFamily: "var(--font-display)" }}>Email</label>
+                          style={{ color: "rgba(255,255,255,0.4)", fontFamily: "var(--font-display)" }}>Email *</label>
                         <input type="email" required value={email}
                           onChange={e => setEmail(e.target.value)}
                           className="w-full px-4 py-3 text-sm bg-transparent border outline-none"
@@ -117,7 +117,7 @@ export default function SignupModal({ open, onClose }: Props) {
                       </div>
                       <div>
                         <label className="block text-xs uppercase tracking-widest mb-1.5"
-                          style={{ color: "rgba(255,255,255,0.4)", fontFamily: "var(--font-display)" }}>Password</label>
+                          style={{ color: "rgba(255,255,255,0.4)", fontFamily: "var(--font-display)" }}>Password *</label>
                         <input type="password" required value={password}
                           onChange={e => setPassword(e.target.value)}
                           className="w-full px-4 py-3 text-sm bg-transparent border outline-none"
@@ -133,9 +133,8 @@ export default function SignupModal({ open, onClose }: Props) {
                       )}
 
                       <button type="submit" disabled={loading}
-                        className="w-full py-4 text-xs font-black uppercase tracking-[0.2em] transition-opacity hover:opacity-90 disabled:opacity-50 pulse-cta mt-2"
-                        style={{ background: "var(--crimson)", color: "#fff", fontFamily: "var(--font-display)", borderRadius: "var(--radius-md)" }}>
-                        {loading ? "Creating Account..." : "Done Playing Small. Start Free →"}
+                        className="w-full py-4 text-xs font-bold uppercase cursor-pointer bg-soft-white text-black hover:bg-soft-white/90 transition-all duration-300">
+                        {loading ? "Creating Account..." : "Start Free Trial"}
                       </button>
                     </form>
                   </motion.div>

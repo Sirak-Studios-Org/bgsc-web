@@ -35,9 +35,14 @@ const OBJECTIONS = [
 export default function ObjectionsSection() {
   return (
     <section className="py-24 px-6" style={{ background: "var(--near-black)" }}>
-      <div className="max-w-3xl mx-auto">
-        <motion.div initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true }} transition={{ duration: 0.6 }} className="mb-14">
+      <div className="max-w-5xl mx-auto">
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true }}
+          transition={{ duration: 0.6 }}
+          className="mb-10"
+        >
           <Eyebrow>Objection Handling</Eyebrow>
           <Display className="text-4xl md:text-5xl">
             If You&apos;ve{" "}
@@ -47,28 +52,52 @@ export default function ObjectionsSection() {
 
         <Accordion.Root type="single" collapsible className="space-y-2">
           {OBJECTIONS.map((item, i) => (
-            <motion.div key={i}
-              initial={{ opacity: 0, y: 12 }} whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true }} transition={{ duration: 0.4, delay: i * 0.06 }}>
-              <Accordion.Item value={`item-${i}`}
-                style={{ border: "1px solid var(--border)", borderRadius: "var(--radius-md)", overflow: "hidden" }}>
+            <motion.div
+              key={i}
+              initial={{ opacity: 0, y: 12 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              transition={{ duration: 0.4, delay: i * 0.06 }}
+            >
+              <Accordion.Item
+                value={`item-${i}`}
+                className="border border-border overflow-hidden"
+              >
                 <Accordion.Header>
-                  <Accordion.Trigger
-                    className="w-full flex items-center justify-between px-6 py-5 text-left group"
-                    style={{ background: "var(--surface-1)" }}>
-                    <span className="text-sm font-bold pr-4"
-                          style={{ color: "#FFFFFF", fontFamily: "var(--font-body, 'Inter', sans-serif)" }}>
-                      {item.q}
-                    </span>
-                    <ChevronDown size={16} style={{ color: "var(--crimson)", flexShrink: 0 }}
-                      className="transition-transform duration-300 group-data-[state=open]:rotate-180" />
+                  <Accordion.Trigger className="w-full flex items-center justify-between px-6 py-5 text-left group bg-surface-1 cursor-pointer">
+                    <div className="flex items-start gap-4">
+                      {/* Index */}
+                      {/* <span className="text-xs font-bold text-white/40 mt-[2px]">
+                        {String(i + 1).padStart(2, "0")}
+                      </span> */}
+
+                      {/* Question */}
+                      <span className="text-sm font-bold text-white pr-4">
+                        {item.q}
+                      </span>
+                    </div>
+
+                    <ChevronDown
+                      size={16}
+                      className="text-white transition-transform duration-300 group-data-[state=open]:rotate-180"
+                    />
                   </Accordion.Trigger>
                 </Accordion.Header>
-                <Accordion.Content style={{ background: "var(--surface-2)" }}>
-                  <p className="px-6 py-5 text-sm leading-relaxed"
-                     style={{ color: "rgba(255,255,255,0.78)", fontFamily: "var(--font-body, 'Inter', sans-serif)" }}>
-                    {item.a}
-                  </p>
+
+                <Accordion.Content asChild>
+                  <motion.div
+                    initial={false}
+                    animate={{ height: "auto", opacity: 1 }}
+                    exit={{ height: 0, opacity: 0 }}
+                    transition={{ duration: 0.3, ease: "easeInOut" }}
+                    className="overflow-hidden bg-surface-1"
+                  >
+                    <div className="px-6 pb-5">
+                      <p className="text-sm leading-relaxed text-white/80">
+                        {item.a}
+                      </p>
+                    </div>
+                  </motion.div>
                 </Accordion.Content>
               </Accordion.Item>
             </motion.div>

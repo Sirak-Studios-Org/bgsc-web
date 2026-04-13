@@ -6,11 +6,11 @@ import { Eyebrow, Display } from "./ui";
 
 const PHASES = [
   { phase: "Phase 1", name: "Foundation", weeks: "Weeks 1-4", img: "/images/phase1-foundation.jpg",
-    desc: "Movement patterns, structural integrity, joint prep. You learn how your body actually works — then you learn to demand more from it." },
+    desc: "Movement patterns, structural integrity, joint prep. You learn how your body actually works - then you learn to demand more from it." },
   { phase: "Phase 2", name: "Build",       weeks: "Weeks 5-10", img: "/images/phase2-build.jpg",
     desc: "Progressive overload done right. You'll lift numbers you didn't think were possible. This is where the identity shift happens." },
   { phase: "Phase 3", name: "Power",       weeks: "Weeks 11-16", img: "/images/phase3-power.jpg",
-    desc: "Strength meets speed meets presence. You don't just look different — you move differently. You enter rooms differently." },
+    desc: "Strength meets speed meets presence. You don't just look different - you move differently. You enter rooms differently." },
 ];
 
 const INCLUDED = [
@@ -32,12 +32,12 @@ export default function MethodSection() {
         <motion.div initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }} transition={{ duration: 0.6 }} className="max-w-3xl mb-16">
           <Eyebrow>The Method</Eyebrow>
-          <Display className="text-3xl sm:text-4xl md:text-5xl mb-4">
+          <Display className="text-3xl sm:text-4xl md:text-5xl mb-4 leading-[1.05]">
             Eat Clean.{" "}
             <span style={{ color: "var(--crimson)" }}>Lift Heavy.</span>
             {" "}Get Coached.
           </Display>
-          <p className="text-lg leading-relaxed"
+          <p className="text-sm leading-relaxed"
              style={{ color: "var(--ash)", fontFamily: "var(--font-body, 'Inter', sans-serif)" }}>
             Not a recycled men&apos;s program. Not high-rep &ldquo;toning.&rdquo; A structured 16-week
             system built around three pillars that actually move the needle - clean nutrition,
@@ -46,7 +46,7 @@ export default function MethodSection() {
         </motion.div>
 
         {/* Phases */}
-        <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-6 mb-12 lg:mb-20">
+        <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-6 mb-8">
           {PHASES.map((p, i) => (
             <motion.div key={p.phase}
               className="relative overflow-hidden"
@@ -85,23 +85,48 @@ export default function MethodSection() {
         </div>
 
         {/* What's included */}
-        <motion.div className="p-5 md:p-8 lg:p-12"
-          style={{ background: "var(--surface-2)", border: "1px solid var(--border)", borderRadius: "var(--radius-lg)" }}
-          initial={{ opacity: 0 }} whileInView={{ opacity: 1 }} viewport={{ once: true }} transition={{ duration: 0.6 }}>
-          <h4 className="text-xs font-bold uppercase tracking-[0.3em] mb-8"
-              style={{ color: "var(--crimson)", fontFamily: "var(--font-display, 'Poppins', sans-serif)" }}>
-            Everything Included in Your Free 7-Day Trial
-          </h4>
-          <ul className="grid md:grid-cols-2 gap-x-12 gap-y-4">
-            {INCLUDED.map((item) => (
-              <li key={item} className="flex items-start gap-3">
-                <span className="flex-shrink-0 mt-0.5 w-5 h-5 flex items-center justify-center text-xs font-bold"
-                  style={{ background: "rgba(143,0,0,0.2)", color: "var(--crimson)", borderRadius: "var(--radius-sm)" }}>✓</span>
-                <span className="text-sm"
-                      style={{ color: "#FFFFFF", fontFamily: "var(--font-body, 'Inter', sans-serif)" }}>{item}</span>
-              </li>
+        <motion.div
+          className="px-6 py-10 border border-border bg-[#0e0e0ea2]"
+          initial={{ opacity: 0 }}
+          whileInView={{ opacity: 1 }}
+          viewport={{ once: true }}
+          transition={{ duration: 0.6 }}
+        >
+          {/* Header */}
+          <div className="mb-8">
+            <h4 className="text-sm font-bold uppercase tracking-[0.3em] mb-4 text-crimson">
+              Everything Included in free trial
+            </h4>
+            <p className="text-sm text-ash max-w-md">
+              Everything you need to execute the system properly — not guess your way through it.
+            </p>
+          </div>
+
+          {/* Grid */}
+          <div className="grid md:grid-cols-2 gap-x-12">
+            {[0, 1].map((col) => (
+              <div key={col} className="divide-y divide-border/60">
+                {INCLUDED
+                  .filter((_, i) => i % 2 === col)
+                  .map((item) => (
+                    <div
+                      key={item}
+                      className="flex items-start gap-4 py-4 group"
+                    >
+                      {/* Checkbox */}
+                      <span className="shrink-0 mt-1 w-5 h-5 flex items-center justify-center border border-border text-sm font-bold text-crimson">
+                        ✓
+                      </span>
+
+                      {/* Text */}
+                      <p className="text-sm text-soft-white leading-relaxed group-hover:translate-x-1 transition-transform duration-200">
+                        {item}
+                      </p>
+                    </div>
+                  ))}
+              </div>
             ))}
-          </ul>
+          </div>
         </motion.div>
       </div>
     </section>
