@@ -87,7 +87,7 @@ export default function CloseSection({ onCta }: { onCta: () => void }) {
             initial={{ opacity: 0, scale: 0.97 }} whileInView={{ opacity: 1, scale: 1 }}
             viewport={{ once: true }} transition={{ duration: 0.7, delay: 0.15 }}>
             <Image src="/images/close-triumph.jpg" alt="Step into a stronger standard" fill
-              className="object-cover object-top brightness-80 select-none pointer-events-none" />
+              className="object-cover object-top brightness-80 select-none pointer-events-none border border-border" />
           </motion.div>
         </div>
 

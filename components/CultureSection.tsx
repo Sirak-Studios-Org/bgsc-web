@@ -52,14 +52,49 @@ export default function CultureSection() {
           {/* Mobile: simple 2-col grid */}
           <div className="grid grid-cols-2 gap-4 md:hidden">
             {[
-              { src: "/images/community-1.jpg", alt: "BGSC community" },
-              { src: "/images/community-2.jpg", alt: "Members training together" },
-              { src: "/images/community-3.jpg", alt: "Chalk and preparation" },
-              { src: "/images/community-4.jpg", alt: "Rest between sets" },
+              {
+                src: "/images/community-1.jpg",
+                alt: "BGSC community",
+                clip: "polygon(0 0, 100% 0, 100% 85%, 85% 100%, 0 100%)",
+              },
+              {
+                src: "/images/community-2.jpg",
+                alt: "Members training together",
+                clip: "polygon(0 0, 100% 0, 100% 100%, 15% 100%, 0 85%)",
+              },
+              {
+                src: "/images/community-3.jpg",
+                alt: "Chalk and preparation",
+                clip: "polygon(0 0, 85% 0, 100% 15%, 100% 100%, 0 100%)",
+              },
+              {
+                src: "/images/community-4.jpg",
+                alt: "Rest between sets",
+                clip: "polygon(15% 0, 100% 0, 100% 100%, 0 100%, 0% 15%)",
+              },
             ].map((img) => (
               <div key={img.src} className="relative" style={{ height: 160 }}>
-                <Image src={img.src} alt={img.alt} fill
-                  className="object-cover select-none pointer-events-none border border-border brightness-80" />
+                
+                {/* Border Container */}
+                <div
+                  className="w-full h-full bg-border p-px"
+                  style={{ clipPath: img.clip }}
+                >
+                  
+                  {/* Image Wrapper */}
+                  <div
+                    className="relative w-full h-full overflow-hidden"
+                    style={{ clipPath: img.clip }}
+                  >
+                    <Image
+                      src={img.src}
+                      alt={img.alt}
+                      fill
+                      className="object-cover select-none pointer-events-none brightness-80"
+                    />
+                  </div>
+
+                </div>
               </div>
             ))}
           </div>
