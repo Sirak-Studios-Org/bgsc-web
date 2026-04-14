@@ -119,7 +119,7 @@ export default function HeroSection({ onCta }: { onCta: () => void }) {
             className="text-base md:text-lg max-w-xs md:max-w-md mx-auto uppercase leading-relaxed mt-3 lg:mt-0 mb-6"
             style={{ color: "var(--ash)", fontFamily: "var(--font-body, 'Inter', sans-serif)" }}
           >
-            An invitation into a stronger standard. Not a workout plan but a behavioral code.
+            An invitation into a stronger standard.
           </motion.p>
 
           <motion.button

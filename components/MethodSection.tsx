@@ -93,10 +93,11 @@ export default function MethodSection() {
           transition={{ duration: 0.6 }}
         >
           {/* Header */}
-          <div className="mb-8">
-            <h4 className="text-sm font-bold uppercase tracking-[0.3em] mb-4 text-crimson">
-              Everything Included in free trial
-            </h4>
+          <div className="mb-10">
+            <Display className="text-3xl sm:text-4xl md:text-5xl mb-4 leading-[1.05]">
+              Everything Included
+              <span style={{ color: "var(--crimson)" }}> in <br/> free trial</span>
+            </Display>
             <p className="text-sm text-ash max-w-md">
               Everything you need to execute the system properly — not guess your way through it.
             </p>

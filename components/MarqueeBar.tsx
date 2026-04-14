@@ -4,7 +4,6 @@ import React from "react";
 
 const WORDS = [
   "EAT CLEAN", "LIFT HEAVY", "GET COACHED", "BAD GIRL STRENGTH CLUB",
-  "NOT SMALL", "STRENGTH IS FEMININE", "BGSC", "DONE PLAYING SMALL",
 ];
 
 function Track({ hidden }: { hidden?: boolean }) {
@@ -20,7 +19,7 @@ function Track({ hidden }: { hidden?: boolean }) {
             }}>
             {w}
           </span>
-          <div className="mx-10 md:mx-14 shrink-0 opacity-60">
+          <div className="mx-8 md:mx-10 shrink-0 opacity-60">
             <Image src="/images/logo-notext.svg" alt="" width={80} height={20} className="h-3.5 w-auto select-none" />
           </div>
         </React.Fragment>
