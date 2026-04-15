@@ -14,9 +14,9 @@ function Word({ children, progress, range, isHighlighted }: { children: string; 
 
   return (
     <span className="relative inline-block mr-[0.25em]">
-      <motion.span 
-        style={{ 
-          opacity, 
+      <motion.span
+        style={{
+          opacity,
           filter: blur,
           color: isHighlighted ? "var(--color-crimson)" : "inherit"
         }}
@@ -39,8 +39,8 @@ export default function ScrollReveal({ children, className = "" }: ScrollRevealP
   return (
     <section ref={containerRef} className={`relative py-40 px-6 flex items-center justify-center ${className}`}>
       <div className="relative max-w-4xl mx-auto">
-        <motion.div 
-          style={{ 
+        <motion.div
+          style={{
             rotateX: useTransform(scrollYProgress, [0, 1], [5, 0]),
             transformOrigin: "center center"
           }}
@@ -49,10 +49,10 @@ export default function ScrollReveal({ children, className = "" }: ScrollRevealP
           {words.map((word, i) => {
             const start = i / words.length;
             const end = start + (1 / words.length);
-            
+
             // Highlight specific words (cleaning punctuation for matching)
             const cleanWord = word.replace(/[.,"]/g, "").toLowerCase();
-            const highlights = ["rewarded", "agreeable", "low-friction", "confinement"];
+            const highlights = ["rewarded", "agreeable", "low", "friction", "confinement"];
             const isHighlighted = highlights.includes(cleanWord);
 
             return (

@@ -29,11 +29,11 @@ export default function StickyCtaBar({ onCta }: { onCta: () => void }) {
           }}
         >
           <div className="max-w-6xl mx-auto px-6 py-3 flex items-center justify-between gap-4">
-            
+
             {/* Left: Logo */}
             <div className="flex-1 flex justify-start">
               <Image
-                src="/logo.svg"
+                src="/images/primary-logo.svg"
                 alt="BGSC logo"
                 width={180}
                 height={56}
@@ -73,7 +73,7 @@ export default function StickyCtaBar({ onCta }: { onCta: () => void }) {
                 </div>
 
                 <span className="relative z-10 font-bold uppercase text-[11px] md:text-xs tracking-[0.25em] transition-opacity duration-300 group-hover:opacity-0 whitespace-nowrap">
-                  Start Today
+                  Free Trial
                 </span>
               </motion.button>
             </div>

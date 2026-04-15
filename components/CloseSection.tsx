@@ -27,7 +27,7 @@ export default function CloseSection({ onCta }: { onCta: () => void }) {
               Step Into a{" "} <span style={{ color: "var(--crimson)" }}>Stronger Standard.</span>
             </Display>
             <p className="text-sm md:text-base leading-relaxed mb-7"
-               style={{ color: "var(--ash)", fontFamily: "var(--font-body, 'Inter', sans-serif)" }}>
+              style={{ color: "var(--ash)", fontFamily: "var(--font-body, 'Inter', sans-serif)" }}>
               You can keep doing what you&apos;ve been doing and stay exactly where you are.
               Or you can accept the invitation and find out what
               happens when you finally train like you mean it.
@@ -36,7 +36,7 @@ export default function CloseSection({ onCta }: { onCta: () => void }) {
             <ul className="space-y-3 mb-8">
               {PERKS.map((perk) => (
                 <li key={perk} className="flex items-start gap-3">
-                  
+
                   {/* Checkbox */}
                   <span className="shrink-0 mt-0.5 w-5 h-5 flex items-center justify-center border border-border text-[11px] font-bold text-crimson">
                     ✓
@@ -65,17 +65,17 @@ export default function CloseSection({ onCta }: { onCta: () => void }) {
               <div className="absolute left-1 top-1 bottom-1 w-[44px] bg-near-black text-soft-white transition-all duration-500 ease-[cubic-bezier(0.85,0,0.15,1)] group-hover:w-[calc(100%-8px)] z-20 flex items-center justify-center border border-white/5">
                 <div className="absolute transition-all duration-300 ease-out flex items-center justify-center group-hover:opacity-0 group-hover:scale-50">
                   <svg width="20" height="20" viewBox="-5 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
-                    <path d="M0 12.781v6.719c0 0.813 0.594 1.406 1.438 1.406h7.813v5.375c0 0.5 0.219 0.813 0.688 1.031 0.125 0.031 0.281 0.063 0.406 0.063 0.313 0 0.563-0.094 0.781-0.313l10.094-10.156c0.438-0.375 0.438-1.125 0-1.563l-10.094-10.063c-0.625-0.688-1.875-0.25-1.875 0.781v5.344h-7.813c-0.844 0-1.438 0.563-1.438 1.375z" fill="currentColor"/>  
+                    <path d="M0 12.781v6.719c0 0.813 0.594 1.406 1.438 1.406h7.813v5.375c0 0.5 0.219 0.813 0.688 1.031 0.125 0.031 0.281 0.063 0.406 0.063 0.313 0 0.563-0.094 0.781-0.313l10.094-10.156c0.438-0.375 0.438-1.125 0-1.563l-10.094-10.063c-0.625-0.688-1.875-0.25-1.875 0.781v5.344h-7.813c-0.844 0-1.438 0.563-1.438 1.375z" fill="currentColor" />
                   </svg>
                 </div>
-                
+
                 <div className="absolute transition-all duration-500 ease-[cubic-bezier(0.85,0,0.15,1)] scale-50 opacity-0 group-hover:scale-100 group-hover:opacity-100 flex items-center justify-center gap-3 uppercase font-black text-[10px] md:text-xs tracking-[0.3em] whitespace-nowrap">
-                  <span>Accept Invitation</span>
+                  <span>Start Free</span>
                 </div>
               </div>
 
               <span className="relative z-10 font-bold uppercase text-[11px] md:text-xs tracking-[0.25em] transition-opacity duration-300 group-hover:opacity-0 whitespace-nowrap">
-                Done Playing Small
+                Accept Challenge
               </span>
             </motion.button>
           </motion.div>
@@ -105,33 +105,49 @@ export default function CloseSection({ onCta }: { onCta: () => void }) {
           </p>
 
           {/* Pricing */}
-          <div className="flex flex-col md:flex-row items-center md:items-start justify-center gap-10 md:gap-24 mb-12">
-            
-            {/* Basic */}
-            <div className="text-center">
-              <p className="text-xs font-bold uppercase tracking-widest mb-3 text-crimson">
+          <div className="flex flex-col md:flex-row items-center justify-center gap-6 md:gap-10 mb-12">
+
+            {/* BASIC */}
+            <div className="group cursor-pointer rounded-[2px] border border-white/20 px-8 py-8 w-[240px] md:w-[260px] text-center transition-all duration-300 bg-crimson/80 hover:bg-crimson/10 hover:border-crimson hover:scale-105 flex flex-col justify-between h-[220px]">
+              <p
+                className="text-[30px] uppercase tracking-[0.2em] mb-4 text-soft-white font-bold"
+                style={{ fontFamily: "var(--font-display)" }}
+              >
                 Basic
               </p>
-              <p className="text-4xl md:text-5xl font-black text-soft-white leading-none">
-                $49<span className="text-lg md:text-xl font-normal ml-1">/mo</span>
+
+              <p className="text-5xl md:text-6xl font-black text-soft-white leading-none">
+                $49<span className="text-lg font-normal ml-1"
+                  style={{
+                    fontFamily: "var(--font-display)"
+                  }}>/mo</span>
               </p>
-              <p className="text-sm mt-4 text-ash/60">Foundation & Build</p>
+
+              <p className="text-sm mt-4 text-soft-white font-bold uppercase">
+                Foundation & Build
+              </p>
             </div>
 
-            {/* Premium */}
-            <div className="text-center">
-              <p className="text-xs font-bold uppercase tracking-widest mb-3 text-crimson">
+            {/* VIP */}
+            <div className="group cursor-pointer rounded-[2px] border border-white/20 px-8 py-8 w-[240px] md:w-[260px] text-center transition-all duration-300 bg-crimson/80 hover:bg-crimson/10 hover:border-crimson hover:scale-105 flex flex-col justify-between h-[220px]">
+              <p
+                className="text-[30px] uppercase tracking-[0.2em] mb-4 text-soft-white"
+                style={{ fontFamily: "var(--font-display)" }}
+              >
                 VIP
               </p>
 
-              <p className="text-4xl md:text-5xl font-black text-soft-white leading-none">
-                $299<span className="text-lg md:text-xl font-normal ml-1">/mo</span>
+              <p className="text-5xl md:text-6xl font-black text-soft-white leading-none"
+                style={{ fontFamily: "var(--font-display)" }}
+              >
+                $299<span className="text-lg font-normal ml-1">/mo</span>
               </p>
 
-              <p className="text-sm mt-4 text-ash/60">
+              <p className="text-sm mt-4 text-soft-white font-bold uppercase">
                 Full System + Elite Coaching
               </p>
             </div>
+
           </div>
 
           {/* Guarantee */}
@@ -145,7 +161,7 @@ export default function CloseSection({ onCta }: { onCta: () => void }) {
           initial={{ opacity: 0 }} whileInView={{ opacity: 1 }}
           viewport={{ once: true }} transition={{ duration: 0.8 }}>
           <p className="text-2xl md:text-3xl lg:text-4xl font-black uppercase mb-4 px-4"
-             style={{ color: "var(--soft-white)", fontFamily: "var(--font-display, 'Poppins', sans-serif)" }}>
+            style={{ color: "var(--soft-white)", fontFamily: "var(--font-display, 'Poppins', sans-serif)" }}>
             If you are ready to build something stronger, you are at the right place.
           </p>
           <p className="text-xs mt-8 text-ash">

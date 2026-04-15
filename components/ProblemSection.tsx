@@ -7,7 +7,7 @@ import { Eyebrow, Display } from "./ui";
 const PROBLEMS = [
   {
     hook: "The problem was never your discipline.",
-    body: "You've started programs. You've been consistent. But the programs were built around the wrong goal — shrinking. No system designed for less will ever produce more.",
+    body: "You've started programs. You've been consistent. But the programs were built around the wrong goal shrinking. No system designed for less will ever produce more.",
   },
   {
     hook: "You don't lack motivation. You lack a standard.",
@@ -15,7 +15,7 @@ const PROBLEMS = [
   },
   {
     hook: "You've been training alone in a room built against you.",
-    body: "The environment you train in shapes the woman you become. When your circle doesn't lift heavy, you won't either. BGSC puts you inside a culture where strength is the baseline — not the exception.",
+    body: "The environment you train in shapes the woman you become. When your circle doesn't lift heavy, you won't either. BGSC puts you inside a culture where strength is the baseline not the exception.",
   },
 ];
 
@@ -34,39 +34,39 @@ export default function ProblemSection() {
             transition={{ duration: 0.8, ease: "easeOut" }}
           >
             {/* Image 1 */}
-            <div 
-              className="bg-border p-px w-full aspect-10/9" 
+            <div
+              className="bg-border p-px w-full aspect-10/9"
               style={{ clipPath: "polygon(20% 0, 100% 0, 100% 80%, 80% 100%, 0 100%, 0 20%)" }}
             >
-              <div 
-                className="relative w-full h-full overflow-hidden" 
+              <div
+                className="relative w-full h-full overflow-hidden"
                 style={{ clipPath: "polygon(20% 0, 100% 0, 100% 80%, 80% 100%, 0 100%, 0 20%)" }}
               >
-                <Image 
-                  src="/images/community-1.jpg" 
-                  alt="The old standard — Section 1" 
+                <Image
+                  src="/images/community-1.jpg"
+                  alt="The old standard — Section 1"
                   fill
                   sizes="(max-width: 1024px) 100vw, 40vw"
-                  className="object-cover object-center select-none pointer-events-none" 
+                  className="object-cover object-center select-none pointer-events-none"
                 />
               </div>
             </div>
 
             {/* Image 2 */}
-            <div 
-              className="bg-border p-px w-full aspect-10/9" 
+            <div
+              className="bg-border p-px w-full aspect-10/9"
               style={{ clipPath: "polygon(0 0, 80% 0, 100% 20%, 100% 100%, 20% 100%, 0 80%)" }}
             >
-              <div 
-                className="relative w-full h-full overflow-hidden" 
+              <div
+                className="relative w-full h-full overflow-hidden"
                 style={{ clipPath: "polygon(0 0, 80% 0, 100% 20%, 100% 100%, 20% 100%, 0 80%)" }}
               >
-                <Image 
-                  src="/images/community-4.jpg" 
-                  alt="The old standard — Section 2" 
+                <Image
+                  src="/images/community-4.jpg"
+                  alt="The old standard — Section 2"
                   fill
                   sizes="(max-width: 1024px) 100vw, 40vw"
-                  className="object-cover object-center select-none pointer-events-none" 
+                  className="object-cover object-center select-none pointer-events-none"
                 />
               </div>
             </div>
@@ -96,7 +96,7 @@ export default function ProblemSection() {
                   className="group"
                 >
                   <p className="text-base md:text-lg font-bold mb-1.5 uppercase tracking-wider flex items-start gap-2">
-                    <span className="aspect-square bg-crimson w-1.5 h-1.5 rounded-full mt-2"/>
+                    <span className="aspect-square bg-crimson w-1.5 h-1.5 rounded-full mt-2" />
                     <span className="text-soft-white">{p.hook}</span>
                   </p>
                   <p className="text-sm md:text-base leading-relaxed text-ash pl-3.5">

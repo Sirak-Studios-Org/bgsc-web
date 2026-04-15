@@ -1,17 +1,23 @@
 import type { Metadata } from "next";
-import { Inter, Poppins } from "next/font/google";
+import { Archivo_Black, Inter, Poppins } from "next/font/google";
 import "./globals.css";
 
 const poppins = Poppins({
   subsets: ["latin"],
   weight: ["100", "200", "300", "400", "500", "600", "700", "800", "900"],
   style: ["normal", "italic"],
-  variable: "--font-display",
+  variable: "--font-poppins",
 });
 
 const inter = Inter({
   subsets: ["latin"],
   variable: "--font-body",
+});
+
+const archivoBlack = Archivo_Black({
+  subsets: ["latin"],
+  weight: ["400"],
+  variable: "--font-display",
 });
 
 export const metadata: Metadata = {
@@ -38,7 +44,7 @@ export default function RootLayout({
   children,
 }: Readonly<{ children: React.ReactNode }>) {
   return (
-    <html lang="en" className={`h-full ${poppins.variable} ${inter.variable}`}>
+    <html lang="en" className={`h-full ${poppins.variable} ${inter.variable} ${archivoBlack.variable}`}>
       <body className="min-h-full flex flex-col max-w-[2000px] mx-auto">{children}</body>
     </html>
   );

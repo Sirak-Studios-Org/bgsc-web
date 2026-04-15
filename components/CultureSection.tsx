@@ -10,18 +10,18 @@ const TESTIMONIALS = [
     name: "Mariana D.", tag: "Phase 3 graduate", img: "/images/avatar-1.jpg",
   },
   {
-    quote: "They told me I'd get bulky. I didn't. I got powerful. There's a difference and now I know it in my bones. Strong is not the opposite of feminine.",
+    quote: "They told me I'd get bulky. I didn't. I got powerful. There's a difference and now I know why Steph calls it a new standard! This has changed every aspect of my daily life.",
     name: "Kezia T.", tag: "12 weeks in", img: "/images/avatar-2.jpg",
   },
   {
-    quote: "It's not just a workout program. The community held me when I wanted to quit. I don't need more content. I needed the right culture. This is it.",
+    quote: "Its not just an online course, its my Family! The women I met in the club have become my  closest friends and I have unlocked levels to myself I never knew existed before.",
     name: "Simone A.", tag: "Community member, 8 months", img: "/images/avatar-3.jpg",
   },
 ];
 
 const STATS = [
   { number: "1,200+", label: "Active Members" },
-  { number: "94%",    label: "Complete All 3 Phases" },
+  { number: "94%", label: "Complete All 3 Phases" },
   { number: "16 wks", label: "Full System" },
 ];
 
@@ -38,9 +38,8 @@ export default function CultureSection() {
             <span style={{ color: "var(--crimson)" }}>Workout Plan.</span>
           </Display>
           <p className="text-sm md:text-base max-w-3xl leading-relaxed"
-             style={{ color: "var(--ash)", fontFamily: "var(--font-body, 'Inter', sans-serif)" }}>
-            You don&apos;t need more content. You need the right culture.
-            Women from every background united by one refusal - to stay where they were told to stay.
+            style={{ color: "var(--ash)", fontFamily: "var(--font-body, 'Inter', sans-serif)" }}>
+            A new standard for women who are done playing small. Will you accept the challenge?
           </p>
         </motion.div>
 
@@ -74,13 +73,13 @@ export default function CultureSection() {
               },
             ].map((img) => (
               <div key={img.src} className="relative" style={{ height: 160 }}>
-                
+
                 {/* Border Container */}
                 <div
                   className="w-full h-full bg-border p-px"
                   style={{ clipPath: img.clip }}
                 >
-                  
+
                   {/* Image Wrapper */}
                   <div
                     className="relative w-full h-full overflow-hidden"
@@ -144,14 +143,14 @@ export default function CultureSection() {
                 </div>
                 <div>
                   <p className="text-sm font-bold"
-                     style={{ color: "#FFFFFF", fontFamily: "var(--font-display, 'Poppins', sans-serif)" }}>{v.name}</p>
+                    style={{ color: "#FFFFFF", fontFamily: "var(--font-display, 'Poppins', sans-serif)" }}>{v.name}</p>
                   <p className="text-xs mt-0.5"
-                     style={{ color: "rgba(255,255,255,0.5)", fontFamily: "var(--font-body, 'Inter', sans-serif)" }}>{v.tag}</p>
+                    style={{ color: "rgba(255,255,255,0.5)", fontFamily: "var(--font-body, 'Inter', sans-serif)" }}>{v.tag}</p>
                 </div>
               </div>
               <p className="text-xs mb-4" style={{ color: "var(--crimson)", letterSpacing: "0.1em" }}>★★★★★</p>
               <p className="text-sm leading-relaxed flex-1"
-                 style={{ color: "#FFFFFF", fontFamily: "var(--font-body, 'Inter', sans-serif)" }}>
+                style={{ color: "#FFFFFF", fontFamily: "var(--font-body, 'Inter', sans-serif)" }}>
                 &ldquo;{v.quote}&rdquo;
               </p>
             </motion.div>

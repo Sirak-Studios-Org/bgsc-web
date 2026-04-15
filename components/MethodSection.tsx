@@ -5,12 +5,18 @@ import Image from "next/image";
 import { Eyebrow, Display } from "./ui";
 
 const PHASES = [
-  { phase: "Phase 1", name: "Foundation", weeks: "Weeks 1-4", img: "/images/phase1-foundation.jpg",
-    desc: "Movement patterns, structural integrity, joint prep. You learn how your body actually works - then you learn to demand more from it." },
-  { phase: "Phase 2", name: "Build",       weeks: "Weeks 5-10", img: "/images/phase2-build.jpg",
-    desc: "Progressive overload done right. You'll lift numbers you didn't think were possible. This is where the identity shift happens." },
-  { phase: "Phase 3", name: "Power",       weeks: "Weeks 11-16", img: "/images/phase3-power.jpg",
-    desc: "Strength meets speed meets presence. You don't just look different - you move differently. You enter rooms differently." },
+  {
+    phase: "Phase 1", name: "Foundation", weeks: "Weeks 1-4", img: "/images/phase1-foundation.jpg",
+    desc: "Movement patterns, structural integrity, joint prep. You learn how your body actually works then you learn to demand more from it."
+  },
+  {
+    phase: "Phase 2", name: "Build", weeks: "Weeks 5-10", img: "/images/phase2-build.jpg",
+    desc: "Progressive overload done right. You'll lift numbers you didn't think were possible. This is where the identity shift happens."
+  },
+  {
+    phase: "Phase 3", name: "Power", weeks: "Weeks 11-16", img: "/images/phase3-power.jpg",
+    desc: "Strength meets speed meets presence. You don't just look different you move differently. You enter rooms differently."
+  },
 ];
 
 const INCLUDED = [
@@ -38,9 +44,9 @@ export default function MethodSection() {
             {" "}Get Coached.
           </Display>
           <p className="text-sm md:text-base leading-relaxed"
-             style={{ color: "var(--ash)", fontFamily: "var(--font-body, 'Inter', sans-serif)" }}>
-            Not a recycled men&apos;s program. Not high-rep &ldquo;toning.&rdquo; A structured 12-week
-            system built around three pillars that actually move the needle - clean nutrition,
+            style={{ color: "var(--ash)", fontFamily: "var(--font-body, 'Inter', sans-serif)" }}>
+            A structured 12-week
+            system built around three pillars that actually move the needle clean nutrition,
             heavy progressive lifting, and real coaching accountability.
           </p>
         </motion.div>
@@ -74,11 +80,11 @@ export default function MethodSection() {
                   {p.phase} · {p.weeks}
                 </p> */}
                 <h3 className="text-2xl font-black uppercase mb-3"
-                    style={{ fontFamily: "var(--font-display, 'Poppins', sans-serif)", color: "#FFFFFF" }}>
+                  style={{ fontFamily: "var(--font-display, 'Poppins', sans-serif)", color: "#FFFFFF" }}>
                   {p.name}
                 </h3>
                 <p className="text-sm leading-relaxed"
-                   style={{ color: "var(--ash)", fontFamily: "var(--font-body, 'Inter', sans-serif)" }}>{p.desc}</p>
+                  style={{ color: "var(--ash)", fontFamily: "var(--font-body, 'Inter', sans-serif)" }}>{p.desc}</p>
               </div>
             </motion.div>
           ))}
@@ -96,10 +102,10 @@ export default function MethodSection() {
           <div className="mb-10">
             <Display className="text-3xl sm:text-4xl md:text-5xl mb-4 leading-[1.05]">
               Everything Included
-              <span style={{ color: "var(--crimson)" }}> in <br/> free trial</span>
+              <span style={{ color: "var(--crimson)" }}> in <br /> free trial</span>
             </Display>
             <p className="text-sm text-ash max-w-md">
-              Everything you need to execute the system properly — not guess your way through it.
+              Everything you need to execute the system properly not guess your way through it.
             </p>
           </div>
 

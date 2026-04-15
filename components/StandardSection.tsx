@@ -19,7 +19,7 @@ export default function StandardSection() {
               <span className="text-crimson">Standard.</span>
             </Display>
             <p className="text-sm md:text-base leading-relaxed mb-10 text-ash">
-              Women do not lack motivation — they lack a standard worth keeping.
+              Women do not lack motivation they lack a standard worth keeping.
               Bad Girl Strength Club is a behavioral identity system. You are not buying a workout program.
               You are stepping into a new behavioral code.
             </p>
@@ -30,21 +30,17 @@ export default function StandardSection() {
                 { text: "Lift Heavy" },
                 { text: "Get Coached" }
               ].map((item, i) => (
-                  <motion.div 
-                    key={i}
-                    className={`group relative aspect-square border border-border flex flex-col items-center justify-center p-3 text-center cursor-default overflow-hidden ${
-                      i === 1 
-                        ? 'translate-y-2 border-crimson/60 bg-crimson/10' 
-                        : 'bg-surface-1'
-                    }`}
-                    initial={{ opacity: 0, scale: 1 }}
-                    whileInView={{ opacity: 1, scale: 1 }}
-                    viewport={{ once: true }}
-                  >
-                    <span className="relative z-10 text-[10px] md:text-xs font-black uppercase tracking-[0.2em] px-1 text-soft-white/70 group-hover:text-soft-white transition-colors">
-                      {item.text}
-                    </span>
-                  </motion.div>
+                <motion.div
+                  key={i}
+                  className="group relative aspect-square border border-border flex flex-col items-center justify-center p-3 text-center cursor-default overflow-hidden bg-surface-1 transition-all duration-300 hover:bg-crimson/70 hover:border-crimson hover:scale-105"
+                  initial={{ opacity: 0, scale: 1 }}
+                  whileInView={{ opacity: 1, scale: 1 }}
+                  viewport={{ once: true }}
+                >
+                  <span className="relative z-10 text-[10px] md:text-xs font-black uppercase tracking-[0.2em] px-1 text-soft-white/70 group-hover:text-soft-white transition-colors">
+                    {item.text}
+                  </span>
+                </motion.div>
               ))}
             </div>
           </motion.div>
@@ -87,20 +83,23 @@ export default function StandardSection() {
             {/* Header */}
             <div className="hidden md:grid md:grid-cols-[1fr_1.2fr_1.2fr]">
               <div className="p-6 bg-near-black border-b border-border flex items-center">
-                 <span className="text-[10px] font-bold uppercase tracking-widest text-white/20">Metric</span>
+                <p className="text-xs font-black uppercase tracking-widest text-soft-white/80">
+                  Metric
+                </p>
               </div>
-              
-              <div className="p-6 text-center bg-near-black border-b border-l border-border">
-                <p className="text-[10px] font-bold uppercase tracking-[0.3em] text-ash/30">
+
+              <div className="p-6 bg-near-black border-b border-l border-border flex items-center justify-center">
+                <p className="text-xs font-black uppercase tracking-widest text-soft-white/80">
                   The Old World
                 </p>
               </div>
 
-              <div className="p-6 text-center bg-surface-1 border-b border-l border-border relative overflow-hidden">
-                <p className="text-[10px] font-black uppercase tracking-[0.3em] text-soft-white">
+              <div className="p-6 bg-near-black border-b border-l border-border flex items-center justify-center">
+                <p className="text-xs font-black uppercase tracking-widest text-soft-white/80">
                   The BGSC Standard
                 </p>
               </div>
+
             </div>
 
             {/* Rows */}
