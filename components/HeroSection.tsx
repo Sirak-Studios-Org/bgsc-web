@@ -93,7 +93,7 @@ export default function HeroSection({ onCta }: { onCta: () => void }) {
 
       {/* Content — Reveal after logo moves */}
       <div className="relative z-10 flex-1 flex flex-col items-center justify-center text-center px-5 pt-10">
-        <div className="max-w-4xl mx-auto mt-[25%] md:mt-[10%]">
+        <div className="max-w-4xl mx-auto mt-[20%] md:mt-12 lg:mt-6">
           <motion.h1
             initial={{ opacity: 0, y: 20 }}
             animate={stage >= 1 ? { opacity: 1, y: 0 } : {}}
