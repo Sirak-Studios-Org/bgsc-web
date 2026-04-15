@@ -1,6 +1,5 @@
 "use client";
 
-import { useState } from "react";
 import HeroSection from "@/components/HeroSection";
 import VideoSection from "@/components/VideoSection";
 import MarqueeBar from "@/components/MarqueeBar";
@@ -11,16 +10,18 @@ import CultureSection from "@/components/CultureSection";
 import ObjectionsSection from "@/components/ObjectionsSection";
 import CloseSection from "@/components/CloseSection";
 import StickyCtaBar from "@/components/StickyCtaBar";
-import SignupModal from "@/components/SignupModal";
+
+const PASSION_URL = "https://badgirlstrengthclub.passion.io/";
+
+function handleCta() {
+  window.location.href = PASSION_URL;
+}
 
 export default function VSLPage() {
-  const [modalOpen, setModalOpen] = useState(false);
-
   return (
     <main className="relative overflow-x-hidden">
-      <SignupModal open={modalOpen} onClose={() => setModalOpen(false)} />
-      <StickyCtaBar onCta={() => setModalOpen(true)} />
-      <HeroSection onCta={() => setModalOpen(true)} />
+      <StickyCtaBar onCta={handleCta} />
+      <HeroSection onCta={handleCta} />
       <MarqueeBar />
       <VideoSection />
       <div className="section-divider" />
@@ -34,7 +35,7 @@ export default function VSLPage() {
       <div className="section-divider" />
       <ObjectionsSection />
       <div className="section-divider" />
-      <CloseSection onCta={() => setModalOpen(true)} />
+      <CloseSection onCta={handleCta} />
     </main>
   );
 }
