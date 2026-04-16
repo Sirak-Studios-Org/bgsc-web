@@ -75,3 +75,60 @@ body {
   top: 0; left: 0;
   width: 100%; height: 100%;
 }
+
+/* Shaking animations scalable via --shake-amplitude (1-10) and --shake-duration */
+@keyframes tilt-shaking {
+  0% { transform: rotate(0deg); }
+  25% { transform: rotate(calc(var(--shake-amplitude, 2) * 0.5deg)); }
+  50% { transform: rotate(0deg); }
+  75% { transform: rotate(calc(var(--shake-amplitude, 2) * -0.5deg)); }
+  100% { transform: rotate(0deg); }
+}
+.tilt-shaking { animation: tilt-shaking var(--shake-duration, 0.4s) ease-in-out infinite; }
+
+@keyframes horizontal-shaking {
+ 0% { transform: translateX(0) }
+ 25% { transform: translateX(calc(var(--shake-amplitude, 2) * 1px)) }
+ 50% { transform: translateX(calc(var(--shake-amplitude, 2) * -1px)) }
+ 75% { transform: translateX(calc(var(--shake-amplitude, 2) * 1px)) }
+ 100% { transform: translateX(0) }
+}
+.horizontal-shaking { animation: horizontal-shaking var(--shake-duration, 0.4s) ease-in-out infinite; }
+
+@keyframes vertical-shaking {
+ 0% { transform: translateY(0); }
+ 25% { transform: translateY(calc(var(--shake-amplitude, 2) * 1px)); }
+ 50% { transform: translateY(calc(var(--shake-amplitude, 2) * -1px)); }
+ 75% { transform: translateY(calc(var(--shake-amplitude, 2) * 1px)); }
+ 100% { transform: translateY(0); }
+}
+.vertical-shaking { animation: vertical-shaking var(--shake-duration, 0.4s) ease-in-out infinite; }
+
+@keyframes skew-x-shaking {
+ 0% { transform: skewX(calc(var(--shake-amplitude, 2) * -0.5deg)); }
+ 5% { transform: skewX(calc(var(--shake-amplitude, 2) * 0.5deg)); }
+ 10% { transform: skewX(calc(var(--shake-amplitude, 2) * -0.5deg)); }
+ 15% { transform: skewX(calc(var(--shake-amplitude, 2) * 0.5deg)); }
+ 20% { transform: skewX(0deg); }
+ 100% { transform: skewX(0deg); }
+}
+.skew-x-shaking { animation: skew-x-shaking var(--shake-duration-slow, 2s) ease-in-out infinite; }
+
+@keyframes skew-y-shaking {
+ 0% { transform: skewY(calc(var(--shake-amplitude, 2) * -0.5deg)); }
+ 5% { transform: skewY(calc(var(--shake-amplitude, 2) * 0.5deg)); }
+ 10% { transform: skewY(calc(var(--shake-amplitude, 2) * -0.5deg)); }
+ 15% { transform: skewY(calc(var(--shake-amplitude, 2) * 0.5deg)); }
+ 20% { transform: skewY(0deg); }
+ 100% { transform: skewY(0deg); }
+}
+.skew-y-shaking { animation: skew-y-shaking var(--shake-duration-slow, 2s) ease-in-out infinite; }
+
+@keyframes tilt-n-move-shaking {
+  0% { transform: translate(0, 0) rotate(0deg); }
+  25% { transform: translate(calc(var(--shake-amplitude, 2) * 1px), calc(var(--shake-amplitude, 2) * 1px)) rotate(calc(var(--shake-amplitude, 2) * 0.5deg)); }
+  50% { transform: translate(0, 0) rotate(0deg); }
+  75% { transform: translate(calc(var(--shake-amplitude, 2) * -1px), calc(var(--shake-amplitude, 2) * 1px)) rotate(calc(var(--shake-amplitude, 2) * -0.5deg)); }
+  100% { transform: translate(0, 0) rotate(0deg); }
+}
+.tilt-n-move-shaking { animation: tilt-n-move-shaking var(--shake-duration, 0.4s) ease-in-out infinite; }

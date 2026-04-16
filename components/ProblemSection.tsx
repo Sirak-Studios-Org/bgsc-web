@@ -27,7 +27,7 @@ export default function ProblemSection() {
 
           {/* Dual Images */}
           <motion.div
-            className="lg:col-span-5 grid grid-cols-1 gap-4 lg:gap-6 lg:mb-0"
+            className="lg:col-span-6 grid grid-cols-1 gap-4 lg:gap-6 lg:mb-0"
             initial={{ opacity: 0, x: -30 }}
             whileInView={{ opacity: 1, x: 0 }}
             viewport={{ once: true }}
@@ -35,7 +35,7 @@ export default function ProblemSection() {
           >
             {/* Image 1 */}
             <div
-              className="bg-border p-px w-full aspect-10/9"
+              className="bg-border p-px w-full aspect-[4/5]"
               style={{ clipPath: "polygon(20% 0, 100% 0, 100% 80%, 80% 100%, 0 100%, 0 20%)" }}
             >
               <div
@@ -52,24 +52,7 @@ export default function ProblemSection() {
               </div>
             </div>
 
-            {/* Image 2 */}
-            <div
-              className="bg-border p-px w-full aspect-10/9"
-              style={{ clipPath: "polygon(0 0, 80% 0, 100% 20%, 100% 100%, 20% 100%, 0 80%)" }}
-            >
-              <div
-                className="relative w-full h-full overflow-hidden"
-                style={{ clipPath: "polygon(0 0, 80% 0, 100% 20%, 100% 100%, 20% 100%, 0 80%)" }}
-              >
-                <Image
-                  src="/images/community-4.jpg"
-                  alt="The old standard — Section 2"
-                  fill
-                  sizes="(max-width: 1024px) 100vw, 40vw"
-                  className="object-cover object-center select-none pointer-events-none"
-                />
-              </div>
-            </div>
+
           </motion.div>
 
           {/* Copy */}
@@ -86,7 +69,7 @@ export default function ProblemSection() {
               <span className="text-crimson">Train for Less.</span>
             </Display>
 
-            <div className="space-y-5">
+            <div className="space-y-8 md:space-y-10 mt-8">
               {PROBLEMS.map((p, i) => (
                 <motion.div key={i}
                   initial={{ opacity: 0, y: 10 }}
@@ -95,12 +78,9 @@ export default function ProblemSection() {
                   transition={{ duration: 0.5, delay: i * 0.1 }}
                   className="group"
                 >
-                  <p className="text-base md:text-lg font-bold mb-1.5 uppercase tracking-wider flex items-start gap-2">
-                    <span className="aspect-square bg-crimson w-1.5 h-1.5 rounded-full mt-2" />
-                    <span className="text-soft-white">{p.hook}</span>
-                  </p>
-                  <p className="text-sm md:text-base leading-relaxed text-ash pl-3.5">
-                    {p.body}
+                  <p className="text-xl md:text-2xl lg:text-2xl font-black uppercase tracking-wide flex items-start gap-4">
+                    <span className="shrink-0 aspect-square bg-crimson w-3 h-3 rounded-full mt-2.5 md:mt-3 lg:mt-3.5" />
+                    <span className="text-soft-white leading-relaxed">{p.hook}</span>
                   </p>
                 </motion.div>
               ))}
