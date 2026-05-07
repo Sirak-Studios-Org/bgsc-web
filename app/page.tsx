@@ -33,7 +33,7 @@ export default function VSLPage() {
       <VideoSection />
       <div className="bg-black"><MarqueeBar /></div>
       <ScrollReveal className="bg-near-black">
-        "you have spent years being subtly rewarded for being agreeable and low friction. at some point that starts to feel like confinement."
+        "you were not built to shrink. strength is a standard, not a mood. the standard does not bend to how you feel today."
       </ScrollReveal>
       <div className="section-divider" />
       <ProblemSection />

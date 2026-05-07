@@ -52,7 +52,7 @@ export default function ScrollReveal({ children, className = "" }: ScrollRevealP
 
             // Highlight specific words (cleaning punctuation for matching)
             const cleanWord = word.replace(/[.,"]/g, "").toLowerCase();
-            const highlights = ["rewarded", "agreeable", "low", "friction", "confinement"];
+            const highlights = ["shrink", "standard", "mood", "bend"];
             const isHighlighted = highlights.includes(cleanWord);
 
             return (

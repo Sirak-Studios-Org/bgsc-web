@@ -45,7 +45,7 @@ export default function StickyCtaBar({ onCta }: { onCta: () => void }) {
             {/* Center: Text */}
             <div className="hidden md:flex flex-1 justify-center">
               <p className="text-[10px] md:text-xs font-bold uppercase tracking-[0.25em] text-white/40 whitespace-nowrap">
-                7-day free trial
+                First week free
               </p>
             </div>
 
