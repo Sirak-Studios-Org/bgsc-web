@@ -7,8 +7,9 @@ import MarqueeBar from "@/components/MarqueeBar";
 import ProblemSection from "@/components/ProblemSection";
 import StandardSection from "@/components/StandardSection";
 import MethodSection from "@/components/MethodSection";
+import TierSection from "@/components/TierSection";
 import CultureSection from "@/components/CultureSection";
-import Stats from "@/components/stats";
+import BocaHqSection from "@/components/BocaHqSection";
 import ObjectionsSection from "@/components/ObjectionsSection";
 import CloseSection from "@/components/CloseSection";
 import StickyCtaBar from "@/components/StickyCtaBar";
@@ -19,11 +20,15 @@ function handleCta() {
   window.location.href = PASSION_URL;
 }
 
+function scrollToTiers() {
+  document.getElementById("tiers")?.scrollIntoView({ behavior: "smooth" });
+}
+
 export default function VSLPage() {
   return (
     <main className="relative overflow-x-hidden">
-      <StickyCtaBar onCta={handleCta} />
-      <HeroSection onCta={handleCta} />
+      <StickyCtaBar onCta={scrollToTiers} />
+      <HeroSection />
       <div className="h-8 md:h-20 bg-black" />
       <VideoSection />
       <div className="bg-black"><MarqueeBar /></div>
@@ -37,13 +42,15 @@ export default function VSLPage() {
       <div className="section-divider" />
       <MethodSection />
       <div className="section-divider" />
+      <TierSection onCta={handleCta} />
+      <div className="section-divider" />
       <CultureSection />
       <div className="section-divider" />
-      {/* <Stats /> 
-      <div className="section-divider" />*/}
+      <BocaHqSection onCta={handleCta} />
+      <div className="section-divider" />
       <ObjectionsSection />
       <div className="section-divider" />
-      <CloseSection onCta={handleCta} />
+      <CloseSection onCta={scrollToTiers} />
     </main>
   );
 }

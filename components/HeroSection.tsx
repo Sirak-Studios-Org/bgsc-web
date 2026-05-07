@@ -4,7 +4,11 @@ import { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import Image from "next/image";
 
-export default function HeroSection({ onCta }: { onCta: () => void }) {
+export default function HeroSection() {
+  const scrollToTiers = () => {
+    document.getElementById("tiers")?.scrollIntoView({ behavior: "smooth" });
+  };
+
   const [stage, setStage] = useState(0);
 
   useEffect(() => {
@@ -117,14 +121,15 @@ export default function HeroSection({ onCta }: { onCta: () => void }) {
             className="text-sm md:text-base max-w-xs md:max-w-md mx-auto uppercase leading-relaxed mt-5 md:mt-4 mb-6"
             style={{ color: "var(--ash)", fontFamily: "var(--font-body, 'Inter', sans-serif)" }}
           >
-            A CHALLENGE TO A STRONGER STANDARD.
+            <span className="block text-soft-white tracking-[0.35em] font-bold mb-1">The New Standard</span>
+            <span className="block tracking-[0.2em]">For women who are done playing small.</span>
           </motion.p>
 
           <motion.button
             initial={{ opacity: 0, scale: 0.95 }}
             animate={stage >= 1 ? { opacity: 1, scale: 1 } : {}}
             transition={{ duration: 0.8, delay: 1.4, ease: "easeOut" }}
-            onClick={onCta}
+            onClick={scrollToTiers}
             className="group relative inline-flex items-center mt-5 h-[56px] pl-18 pr-9 overflow-hidden bg-soft-white text-near-black transition-all duration-300 cursor-pointer"
             style={{ borderRadius: "2px" }}
           >
@@ -137,12 +142,12 @@ export default function HeroSection({ onCta }: { onCta: () => void }) {
               </div>
 
               <div className="absolute transition-all duration-500 ease-[cubic-bezier(0.85,0,0.15,1)] scale-50 opacity-0 group-hover:scale-100 group-hover:opacity-100 flex items-center justify-center gap-3 uppercase font-bold text-[10px] md:text-xs tracking-[0.3em] whitespace-nowrap">
-                <span>Start Free</span>
+                <span>Step In</span>
               </div>
             </div>
 
             <span className="relative z-10 font-bold uppercase text-[11px] md:text-xs tracking-[0.25em] transition-opacity duration-300 group-hover:opacity-0 whitespace-nowrap">
-              Accept Challenge
+              Choose Your Immersion Level
             </span>
           </motion.button>
         </div>

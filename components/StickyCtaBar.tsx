@@ -73,7 +73,7 @@ export default function StickyCtaBar({ onCta }: { onCta: () => void }) {
                 </div>
 
                 <span className="relative z-10 font-bold uppercase text-[11px] md:text-xs tracking-[0.25em] transition-opacity duration-300 group-hover:opacity-0 whitespace-nowrap">
-                  Free Trial
+                  Step In
                 </span>
               </motion.button>
             </div>

@@ -7,28 +7,28 @@ import { Eyebrow, Display } from "./ui";
 
 const OBJECTIONS = [
   {
-    q: "Will this work if I've failed other programs in the past?",
-    a: "Most programs fail because they are calorie-deficient, cardio-heavy, and ignore the fundamental differences in female biology. BGSC is a built on a behavioral identity system - we change how you view strength, not just how much of it you have.",
+    q: "Will lifting heavy weights make me bulky?",
+    a: "Strength enhances shape; it doesn't remove femininity. Heavy training builds structure, definition, and the way you carry yourself — the 'bulky' story is a myth designed to keep women out of the weight room.",
   },
   {
-    q: "Will lifting heavy weights make me look bulky?",
-    a: "No. Women have a fraction of the testosterone required to build bulk like men do. Instead, you'll develop shape, definition, and structural strength. The 'bulky' myth was created to keep women out of the weight room; we're here to break it.",
+    q: "I always fall off. Why would this be different?",
+    a: "That's a support problem, not a discipline problem. If you've fallen off before, you didn't have the right structure or the right circle. Choose Supported or Immersed — the standard is held with you, not just handed to you.",
   },
   {
-    q: "Can I start this system if I'm a complete beginner?",
-    a: "Absolutely. Phase 1 (Foundation) was engineered specifically for beginners. We start with movement patterns and joint preparation, building your strength methodically and safely from the ground up.",
+    q: "I'm a complete beginner. Will I be lost?",
+    a: "No. The method starts with movement patterns and structural integrity, then progresses you methodically. You don't need experience — you need a standard, and that's what you step into.",
   },
   {
-    q: "What equipment do I need, and can I do this from home?",
-    a: "You can start with just dumbbells and bodyweight. We have a dedicated home-based track built into the system so you can see elite results without needing a commercial gym membership.",
+    q: "I don't have access to a real gym. Does this still work?",
+    a: "Yes. Independent and Supported are built to translate from minimal equipment all the way up to full barbell work. The standard travels with you. Immersed adds in-person coaching at the Boca HQ.",
   },
   {
-    q: "What happens after my 7-day free trial ends?",
-    a: "After your trial, you can continue at $49/month. If you cancel any time before day 7, you pay absolutely nothing. No friction, no questions.",
+    q: "What's the difference between Independent, Supported, and Immersed?",
+    a: "Independent solves the time problem — flexible, on-demand training. Supported solves the consistency problem — live coaching, weekly check-ins, accountability. Immersed solves the certainty problem — in-person coaching at Boca HQ.",
   },
   {
-    q: "Do you offer a money-back guarantee?",
-    a: "Yes. Follow the system for 30 days, and if you don't feel stronger physically and mentally, we'll refund you in full. We stand by the standard we've built.",
+    q: "What happens if I want to stop?",
+    a: "You leave. No friction, no questions. The standard is an invitation, not a trap.",
   },
 ];
 
