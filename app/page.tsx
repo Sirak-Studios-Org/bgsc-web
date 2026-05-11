@@ -1,5 +1,6 @@
 "use client";
 
+import { useRouter } from "next/navigation";
 import HeroSection from "@/components/HeroSection";
 import VideoSection from "@/components/VideoSection";
 import ScrollReveal from "@/components/ScrollReveal";
@@ -16,18 +17,17 @@ import StickyCtaBar from "@/components/StickyCtaBar";
 
 const PASSION_URL = "https://badgirlstrengthclub.passion.io/";
 
-function handleCta() {
-  window.location.href = PASSION_URL;
-}
-
-function scrollToTiers() {
-  document.getElementById("tiers")?.scrollIntoView({ behavior: "smooth" });
-}
-
 export default function VSLPage() {
+  const router = useRouter();
+
+  const goToStepIn = () => router.push("/step-in");
+  const goToPassion = () => {
+    window.location.href = PASSION_URL;
+  };
+
   return (
     <main className="relative overflow-x-hidden">
-      <StickyCtaBar onCta={scrollToTiers} />
+      <StickyCtaBar onCta={goToStepIn} />
       <HeroSection />
       <div className="h-8 md:h-20 bg-black" />
       <VideoSection />
@@ -42,15 +42,15 @@ export default function VSLPage() {
       <div className="section-divider" />
       <MethodSection />
       <div className="section-divider" />
-      <TierSection onCta={handleCta} />
+      <TierSection />
       <div className="section-divider" />
       <CultureSection />
       <div className="section-divider" />
-      <BocaHqSection onCta={handleCta} />
+      <BocaHqSection onCta={goToPassion} />
       <div className="section-divider" />
       <ObjectionsSection />
       <div className="section-divider" />
-      <CloseSection onCta={scrollToTiers} />
+      <CloseSection onCta={goToStepIn} />
     </main>
   );
 }

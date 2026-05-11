@@ -1,15 +1,43 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import Image from "next/image";
+import { useRouter } from "next/navigation";
 
 export default function HeroSection() {
-  const scrollToTiers = () => {
-    document.getElementById("tiers")?.scrollIntoView({ behavior: "smooth" });
-  };
+  const router = useRouter();
+  const goToStepIn = () => router.push("/step-in");
 
   const [stage, setStage] = useState(0);
+  const [pressed, setPressed] = useState(false);
+  const pressedAtRef = useRef<number | null>(null);
+
+  const isHoverDevice = () =>
+    typeof window !== "undefined" &&
+    window.matchMedia("(hover: hover)").matches;
+
+  const handleStepInDown = () => {
+    if (isHoverDevice()) return;
+    pressedAtRef.current = performance.now();
+    setPressed(true);
+  };
+
+  const handleStepInClick = () => {
+    if (isHoverDevice()) {
+      goToStepIn();
+      return;
+    }
+    const elapsed = pressedAtRef.current
+      ? performance.now() - pressedAtRef.current
+      : 0;
+    const remaining = Math.max(0, 500 - elapsed);
+    window.setTimeout(() => {
+      goToStepIn();
+      setPressed(false);
+      pressedAtRef.current = null;
+    }, remaining);
+  };
 
   useEffect(() => {
     const KEY = "bgsc-hero-animation";
@@ -129,24 +157,25 @@ export default function HeroSection() {
             initial={{ opacity: 0, scale: 0.95 }}
             animate={stage >= 1 ? { opacity: 1, scale: 1 } : {}}
             transition={{ duration: 0.8, delay: 1.4, ease: "easeOut" }}
-            onClick={scrollToTiers}
-            className="group relative inline-flex items-center mt-5 h-[56px] pl-18 pr-9 overflow-hidden bg-soft-white text-near-black transition-all duration-300 cursor-pointer"
+            onPointerDown={handleStepInDown}
+            onClick={handleStepInClick}
+            className={`group ${pressed ? "is-pressed" : ""} relative inline-flex items-center mt-5 h-[56px] pl-18 pr-9 overflow-hidden bg-soft-white text-near-black transition-all duration-300 cursor-pointer`}
             style={{ borderRadius: "2px" }}
           >
             {/* Expanding Box */}
-            <div className="absolute left-1 top-1 bottom-1 w-[44px] bg-near-black text-soft-white transition-all duration-500 ease-[cubic-bezier(0.85,0,0.15,1)] group-hover:w-[calc(100%-8px)] z-20 flex items-center justify-center border border-white/5">
-              <div className="absolute transition-all duration-300 ease-out flex items-center justify-center group-hover:opacity-0 group-hover:scale-50">
+            <div className="absolute left-1 top-1 bottom-1 w-[44px] bg-near-black text-soft-white transition-all duration-500 ease-[cubic-bezier(0.85,0,0.15,1)] group-hover:w-[calc(100%-8px)] group-[.is-pressed]:w-[calc(100%-8px)] z-20 flex items-center justify-center border border-white/5">
+              <div className="absolute transition-all duration-300 ease-out flex items-center justify-center group-hover:opacity-0 group-hover:scale-50 group-[.is-pressed]:opacity-0 group-[.is-pressed]:scale-50">
                 <svg width="20" height="20" viewBox="-5 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
                   <path d="M0 12.781v6.719c0 0.813 0.594 1.406 1.438 1.406h7.813v5.375c0 0.5 0.219 0.813 0.688 1.031 0.125 0.031 0.281 0.063 0.406 0.063 0.313 0 0.563-0.094 0.781-0.313l10.094-10.156c0.438-0.375 0.438-1.125 0-1.563l-10.094-10.063c-0.625-0.688-1.875-0.25-1.875 0.781v5.344h-7.813c-0.844 0-1.438 0.563-1.438 1.375z" fill="currentColor" />
                 </svg>
               </div>
 
-              <div className="absolute transition-all duration-500 ease-[cubic-bezier(0.85,0,0.15,1)] scale-50 opacity-0 group-hover:scale-100 group-hover:opacity-100 flex items-center justify-center gap-3 uppercase font-bold text-[10px] md:text-xs tracking-[0.3em] whitespace-nowrap">
+              <div className="absolute transition-all duration-500 ease-[cubic-bezier(0.85,0,0.15,1)] scale-50 opacity-0 group-hover:scale-100 group-hover:opacity-100 group-[.is-pressed]:scale-100 group-[.is-pressed]:opacity-100 flex items-center justify-center gap-3 uppercase font-bold text-[10px] md:text-xs tracking-[0.3em] whitespace-nowrap">
                 <span>Step In</span>
               </div>
             </div>
 
-            <span className="relative z-10 font-bold uppercase text-[11px] md:text-xs tracking-[0.25em] transition-opacity duration-300 group-hover:opacity-0 whitespace-nowrap">
+            <span className="relative z-10 font-bold uppercase text-[11px] md:text-xs tracking-[0.25em] transition-opacity duration-300 group-hover:opacity-0 group-[.is-pressed]:opacity-0 whitespace-nowrap">
               Choose Your Immersion Level
             </span>
           </motion.button>

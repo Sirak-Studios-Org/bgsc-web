@@ -50,6 +50,20 @@ function initSchema(db: Database.Database) {
       key   TEXT PRIMARY KEY,
       value TEXT NOT NULL
     );
+
+    CREATE TABLE IF NOT EXISTS applications (
+      id              INTEGER PRIMARY KEY AUTOINCREMENT,
+      tier            TEXT NOT NULL,
+      name            TEXT NOT NULL,
+      email           TEXT NOT NULL COLLATE NOCASE,
+      phone           TEXT,
+      location        TEXT,
+      training_history TEXT,
+      goals           TEXT,
+      why_now         TEXT,
+      status          TEXT NOT NULL DEFAULT 'new',
+      created_at      TEXT NOT NULL DEFAULT (datetime('now'))
+    );
   `);
 
   // Seed default config

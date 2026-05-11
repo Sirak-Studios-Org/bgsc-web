@@ -2,11 +2,15 @@
 
 import { useState } from "react";
 import { motion } from "framer-motion";
+import Link from "next/link";
 import { Display } from "./ui";
 
 type Billing = "monthly" | "annual";
 
+type TierSlug = "independent" | "supported" | "immersed";
+
 type Tier = {
+  slug: TierSlug;
   name: string;
   positioning: string;
   problem: string;
@@ -23,6 +27,7 @@ type Tier = {
 
 const TIERS: Tier[] = [
   {
+    slug: "independent",
     name: "Independent",
     positioning: "You don't need more time. You need the right system.",
     problem: "Solves the time problem.",
@@ -38,6 +43,7 @@ const TIERS: Tier[] = [
     cta: "Start Independent",
   },
   {
+    slug: "supported",
     name: "Supported",
     positioning: "You don't need more motivation. You need accountability.",
     problem: "Solves the consistency problem.",
@@ -54,6 +60,7 @@ const TIERS: Tier[] = [
     highlighted: true,
   },
   {
+    slug: "immersed",
     name: "Immersed",
     positioning: "You don't need more information. You need guidance.",
     problem: "Solves the certainty problem.",
@@ -71,7 +78,7 @@ const TIERS: Tier[] = [
   },
 ];
 
-export default function TierSection({ onCta }: { onCta: () => void }) {
+export default function TierSection() {
   const [billing, setBilling] = useState<Billing>("monthly");
 
   return (
@@ -230,9 +237,9 @@ export default function TierSection({ onCta }: { onCta: () => void }) {
                   </div>
                 )}
 
-                <button
-                  onClick={onCta}
-                  className={`w-full h-[52px] uppercase font-bold text-[11px] md:text-xs tracking-[0.25em] transition-all duration-300 cursor-pointer ${
+                <Link
+                  href={`/step-in?tier=${tier.slug}`}
+                  className={`w-full h-[52px] flex items-center justify-center uppercase font-bold text-[11px] md:text-xs tracking-[0.25em] transition-all duration-300 cursor-pointer ${
                     tier.highlighted
                       ? "bg-crimson text-soft-white hover:bg-crimson/85"
                       : "bg-soft-white text-near-black hover:bg-ash"
@@ -240,7 +247,7 @@ export default function TierSection({ onCta }: { onCta: () => void }) {
                   style={{ borderRadius: "2px" }}
                 >
                   {tier.cta}
-                </button>
+                </Link>
               </div>
             </motion.div>
           ))}

@@ -1,17 +1,45 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import Image from "next/image";
 
 export default function StickyCtaBar({ onCta }: { onCta: () => void }) {
   const [visible, setVisible] = useState(false);
+  const [pressed, setPressed] = useState(false);
+  const pressedAtRef = useRef<number | null>(null);
 
   useEffect(() => {
     const onScroll = () => setVisible(window.scrollY > window.innerHeight * 0.7);
     window.addEventListener("scroll", onScroll, { passive: true });
     return () => window.removeEventListener("scroll", onScroll);
   }, []);
+
+  const isHoverDevice = () =>
+    typeof window !== "undefined" &&
+    window.matchMedia("(hover: hover)").matches;
+
+  const handleStepInDown = () => {
+    if (isHoverDevice()) return;
+    pressedAtRef.current = performance.now();
+    setPressed(true);
+  };
+
+  const handleStepInClick = () => {
+    if (isHoverDevice()) {
+      onCta();
+      return;
+    }
+    const elapsed = pressedAtRef.current
+      ? performance.now() - pressedAtRef.current
+      : 0;
+    const remaining = Math.max(0, 500 - elapsed);
+    window.setTimeout(() => {
+      onCta();
+      setPressed(false);
+      pressedAtRef.current = null;
+    }, remaining);
+  };
 
   return (
     <AnimatePresence>
@@ -55,24 +83,25 @@ export default function StickyCtaBar({ onCta }: { onCta: () => void }) {
                 initial={{ opacity: 0, scale: 0.95 }}
                 animate={{ opacity: 1, scale: 1 }}
                 transition={{ duration: 0.8, ease: "easeOut" }}
-                onClick={onCta}
-                className="group relative inline-flex items-center h-[56px] pl-18 pr-9 overflow-hidden bg-soft-white text-near-black transition-all duration-300 cursor-pointer"
+                onPointerDown={handleStepInDown}
+                onClick={handleStepInClick}
+                className={`group ${pressed ? "is-pressed" : ""} relative inline-flex items-center h-[56px] pl-18 pr-9 overflow-hidden bg-soft-white text-near-black transition-all duration-300 cursor-pointer`}
                 style={{ borderRadius: "2px" }}
               >
                 {/* Expanding Box */}
-                <div className="absolute left-1 top-1 bottom-1 w-[44px] bg-near-black text-soft-white transition-all duration-500 ease-[cubic-bezier(0.85,0,0.15,1)] group-hover:w-[calc(100%-8px)] z-20 flex items-center justify-center border border-white/5">
-                  <div className="absolute transition-all duration-300 ease-out flex items-center justify-center group-hover:opacity-0 group-hover:scale-50">
+                <div className="absolute left-1 top-1 bottom-1 w-[44px] bg-near-black text-soft-white transition-all duration-500 ease-[cubic-bezier(0.85,0,0.15,1)] group-hover:w-[calc(100%-8px)] group-[.is-pressed]:w-[calc(100%-8px)] z-20 flex items-center justify-center border border-white/5">
+                  <div className="absolute transition-all duration-300 ease-out flex items-center justify-center group-hover:opacity-0 group-hover:scale-50 group-[.is-pressed]:opacity-0 group-[.is-pressed]:scale-50">
                     <svg width="20" height="20" viewBox="-5 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
                       <path d="M0 12.781v6.719c0 0.813 0.594 1.406 1.438 1.406h7.813v5.375c0 0.5 0.219 0.813 0.688 1.031 0.125 0.031 0.281 0.063 0.406 0.063 0.313 0 0.563-0.094 0.781-0.313l10.094-10.156c0.438-0.375 0.438-1.125 0-1.563l-10.094-10.063c-0.625-0.688-1.875-0.25-1.875 0.781v5.344h-7.813c-0.844 0-1.438 0.563-1.438 1.375z" fill="currentColor" />
                     </svg>
                   </div>
 
-                  <div className="absolute transition-all duration-500 ease-[cubic-bezier(0.85,0,0.15,1)] scale-50 opacity-0 group-hover:scale-100 group-hover:opacity-100 flex items-center justify-center">
+                  <div className="absolute transition-all duration-500 ease-[cubic-bezier(0.85,0,0.15,1)] scale-50 opacity-0 group-hover:scale-100 group-hover:opacity-100 group-[.is-pressed]:scale-100 group-[.is-pressed]:opacity-100 flex items-center justify-center">
                     <Image src="/images/logo-notext.svg" alt="BGSC" width={80} height={20} className="w-20 md:w-24 h-auto brightness-100 select-none" />
                   </div>
                 </div>
 
-                <span className="relative z-10 font-bold uppercase text-[11px] md:text-xs tracking-[0.25em] transition-opacity duration-300 group-hover:opacity-0 whitespace-nowrap">
+                <span className="relative z-10 font-bold uppercase text-[11px] md:text-xs tracking-[0.25em] transition-opacity duration-300 group-hover:opacity-0 group-[.is-pressed]:opacity-0 whitespace-nowrap">
                   Step In
                 </span>
               </motion.button>
