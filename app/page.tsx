@@ -6,7 +6,6 @@ import VideoSection from "@/components/VideoSection";
 import ScrollReveal from "@/components/ScrollReveal";
 import MarqueeBar from "@/components/MarqueeBar";
 import ProblemSection from "@/components/ProblemSection";
-import StandardSection from "@/components/StandardSection";
 import MethodSection from "@/components/MethodSection";
 import TierSection from "@/components/TierSection";
 import CultureSection from "@/components/CultureSection";
@@ -37,8 +36,6 @@ export default function VSLPage() {
       </ScrollReveal>
       <div className="section-divider" />
       <ProblemSection />
-      <div className="section-divider" />
-      <StandardSection />
       <div className="section-divider" />
       <MethodSection />
       <div className="section-divider" />

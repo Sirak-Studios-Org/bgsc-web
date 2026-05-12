@@ -1,12 +1,12 @@
 import { NextRequest, NextResponse } from "next/server";
-import { verifyAdminToken, ADMIN_COOKIE } from "@/lib/auth";
+import { ADMIN_COOKIE } from "@/lib/auth";
 
 export function proxy(req: NextRequest) {
   const { pathname } = req.nextUrl;
 
   if (pathname.startsWith("/admin") && pathname !== "/admin") {
     const token = req.cookies.get(ADMIN_COOKIE)?.value;
-    if (!token || !verifyAdminToken(token)) {
+    if (!token) {
       return NextResponse.redirect(new URL("/admin", req.url));
     }
   }

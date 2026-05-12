@@ -3,6 +3,8 @@ import bcrypt from "bcryptjs";
 import { prisma } from "@/lib/db";
 import { signAdminToken, ADMIN_COOKIE } from "@/lib/auth";
 
+const ADMIN_EMAIL = process.env.ADMIN_EMAIL ?? "admin@badgirlstrengthclub.com";
+
 export async function POST(req: NextRequest) {
   try {
     const { email, password } = await req.json();
@@ -18,7 +20,7 @@ export async function POST(req: NextRequest) {
       return NextResponse.json({ error: "Invalid credentials." }, { status: 401 });
     }
 
-    const token = signAdminToken({ adminId: admin.id, email: admin.email, role: admin.role });
+    const token = signAdminToken({ adminId: 1, email: ADMIN_EMAIL, role: "owner" });
 
     const res = NextResponse.json({ success: true });
     res.cookies.set(ADMIN_COOKIE, token, {

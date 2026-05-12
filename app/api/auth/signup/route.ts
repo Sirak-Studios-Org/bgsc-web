@@ -9,7 +9,6 @@ export async function POST(req: NextRequest) {
     if (!name?.trim() || !email?.trim() || !password?.trim()) {
       return NextResponse.json({ error: "All fields are required." }, { status: 400 });
     }
-
     if (password.length < 6) {
       return NextResponse.json({ error: "Password must be at least 6 characters." }, { status: 400 });
     }

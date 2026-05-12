@@ -13,7 +13,6 @@ export async function GET() {
 export async function PATCH(req: NextRequest) {
   const session = await getAdminSession();
   if (!session) return NextResponse.json({ error: "Unauthorized." }, { status: 401 });
-
   try {
     const body = await req.json() as Record<string, string>;
     await prisma.$transaction(
@@ -28,6 +27,6 @@ export async function PATCH(req: NextRequest) {
     return NextResponse.json({ success: true });
   } catch (err) {
     console.error("[config/patch]", err);
-    return NextResponse.json({ error: "Failed to update config." }, { status: 500 });
+    return NextResponse.json({ error: "Failed." }, { status: 500 });
   }
 }

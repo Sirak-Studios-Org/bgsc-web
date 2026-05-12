@@ -2,8 +2,7 @@
 
 import { useEffect, useState, useCallback } from "react";
 import { useRouter } from "next/navigation";
-import Link from "next/link";
-import Image from "next/image";
+import AdminNav from "@/components/AdminNav";
 
 type Member = {
   id: number; name: string; email: string;
@@ -47,20 +46,9 @@ export default function AdminMembers() {
 
   return (
     <div className="min-h-screen" style={{ background: "var(--near-black)", color: "#fff" }}>
+      <AdminNav />
 
-      {/* Top bar */}
-      <div className="flex items-center justify-between px-8 py-4 border-b" style={{ borderColor: "var(--border)" }}>
-        <Image src="/logo.svg" alt="BGSC" width={120} height={40} className="w-24 h-auto" />
-        <nav className="flex items-center gap-6">
-          <Link href="/admin/dashboard" className="text-xs uppercase tracking-widest hover:text-white transition-colors"
-            style={{ color: "rgba(255,255,255,0.45)", fontFamily: "var(--font-display)" }}>Dashboard</Link>
-          <span className="text-xs uppercase tracking-widest" style={{ color: "var(--crimson)", fontFamily: "var(--font-display)" }}>Members</span>
-          <button onClick={logout} className="text-xs uppercase tracking-widest hover:text-white transition-colors"
-            style={{ color: "rgba(255,255,255,0.45)", fontFamily: "var(--font-display)" }}>Sign Out</button>
-        </nav>
-      </div>
-
-      <div className="max-w-6xl mx-auto px-8 py-10">
+      <div className="max-w-6xl mx-auto px-4 md:px-8 py-6 md:py-10">
 
         {/* Filters */}
         <div className="flex flex-wrap items-center gap-4 mb-8">

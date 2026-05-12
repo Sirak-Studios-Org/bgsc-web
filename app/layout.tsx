@@ -1,6 +1,9 @@
 import type { Metadata } from "next";
 import { Archivo_Black, Inter, Poppins } from "next/font/google";
+import { Suspense } from "react";
 import "./globals.css";
+import Analytics from "@/components/Analytics";
+import { getConfig } from "@/lib/cms";
 
 const poppins = Poppins({
   subsets: ["latin"],
@@ -23,8 +26,7 @@ const archivoBlack = Archivo_Black({
 export const metadata: Metadata = {
   metadataBase: new URL("https://bgsc.vercel.app"),
   title: "Bad Girl Strength Club — You Were Never Meant to Stay Small",
-  description:
-    "Stop training to shrink. Start training to dominate. The strength program built for women who refuse to stay small.",
+  description: "Stop training to shrink. Start training to dominate. The strength program built for women who refuse to stay small.",
   openGraph: {
     title: "Bad Girl Strength Club",
     description: "You Were Never Meant to Stay Small. Join the standard.",
@@ -40,12 +42,21 @@ export const metadata: Metadata = {
   },
 };
 
-export default function RootLayout({
-  children,
-}: Readonly<{ children: React.ReactNode }>) {
+export default async function RootLayout({ children }: Readonly<{ children: React.ReactNode }>) {
+  let posthogKey: string | undefined;
+  try {
+    const config = await getConfig();
+    posthogKey = config.posthog_key || undefined;
+  } catch { /* non-critical */ }
+
   return (
     <html lang="en" className={`h-full ${poppins.variable} ${inter.variable} ${archivoBlack.variable}`}>
-      <body className="min-h-full flex flex-col max-w-[2000px] mx-auto">{children}</body>
+      <body className="min-h-full flex flex-col max-w-[2000px] mx-auto">
+        {children}
+        <Suspense>
+          <Analytics posthogKey={posthogKey} />
+        </Suspense>
+      </body>
     </html>
   );
 }
