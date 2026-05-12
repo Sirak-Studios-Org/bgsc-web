@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import bcrypt from "bcryptjs";
-import { getDb, getConfig } from "@/lib/db";
+import { prisma, getConfig } from "@/lib/db";
 
 export async function POST(req: NextRequest) {
   try {
@@ -14,32 +14,33 @@ export async function POST(req: NextRequest) {
       return NextResponse.json({ error: "Password must be at least 6 characters." }, { status: 400 });
     }
 
-    const db = getDb();
-    const config = getConfig();
+    const config = await getConfig();
     const trialDays = parseInt(config.trial_days ?? "7", 10);
+    const normalizedEmail = email.trim().toLowerCase();
 
-    const existing = db.prepare(`SELECT id FROM users WHERE email = ?`).get(email.trim());
+    const existing = await prisma.user.findUnique({ where: { email: normalizedEmail } });
     if (existing) {
       return NextResponse.json({ error: "An account with this email already exists." }, { status: 409 });
     }
 
-    const hash = bcrypt.hashSync(password, 10);
-    const result = db.prepare(`
-      INSERT INTO users (name, email, password_hash, trial_end)
-      VALUES (?, ?, ?, datetime('now', ?))
-    `).run(name.trim(), email.trim().toLowerCase(), hash, `+${trialDays} days`);
+    const now = new Date();
+    const trialEnd = new Date(now.getTime() + trialDays * 24 * 60 * 60 * 1000);
 
-    // Queue welcome email (provider-agnostic — picked up when provider is wired)
-    db.prepare(`
-      INSERT INTO email_queue (user_id, template_name, scheduled_for)
-      VALUES (?, 'welcome', datetime('now'))
-    `).run(result.lastInsertRowid);
+    const user = await prisma.user.create({
+      data: {
+        name: name.trim(),
+        email: normalizedEmail,
+        passwordHash: bcrypt.hashSync(password, 10),
+        trialEnd,
+      },
+    });
 
-    // Queue nurture sequence (day 7 if not converted)
-    db.prepare(`
-      INSERT INTO email_queue (user_id, template_name, scheduled_for)
-      VALUES (?, 'nurture_start', datetime('now', ?))
-    `).run(result.lastInsertRowid, `+${trialDays} days`);
+    await prisma.emailQueue.createMany({
+      data: [
+        { userId: user.id, templateName: "welcome", scheduledFor: now },
+        { userId: user.id, templateName: "nurture_start", scheduledFor: trialEnd },
+      ],
+    });
 
     return NextResponse.json({
       success: true,

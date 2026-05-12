@@ -1,19 +1,24 @@
 import { NextResponse } from "next/server";
-import { getDb } from "@/lib/db";
+import { prisma } from "@/lib/db";
 import { getAdminSession } from "@/lib/auth";
 
 export async function GET() {
   const session = await getAdminSession();
   if (!session) return NextResponse.json({ error: "Unauthorized." }, { status: 401 });
 
-  const db = getDb();
+  const now = new Date();
+  const twoDaysFromNow = new Date(now.getTime() + 2 * 24 * 60 * 60 * 1000);
+  const startOfToday = new Date(now.getFullYear(), now.getMonth(), now.getDate());
+  const startOfTomorrow = new Date(startOfToday.getTime() + 24 * 60 * 60 * 1000);
 
-  const total      = (db.prepare(`SELECT COUNT(*) as n FROM users`).get() as { n: number }).n;
-  const active     = (db.prepare(`SELECT COUNT(*) as n FROM users WHERE trial_end > datetime('now') AND is_active = 1`).get() as { n: number }).n;
-  const expired    = (db.prepare(`SELECT COUNT(*) as n FROM users WHERE trial_end <= datetime('now')`).get() as { n: number }).n;
-  const expiringSoon = (db.prepare(`SELECT COUNT(*) as n FROM users WHERE trial_end > datetime('now') AND trial_end <= datetime('now', '+2 days')`).get() as { n: number }).n;
-  const today      = (db.prepare(`SELECT COUNT(*) as n FROM users WHERE date(created_at) = date('now')`).get() as { n: number }).n;
-  const emailPending = (db.prepare(`SELECT COUNT(*) as n FROM email_queue WHERE status = 'pending'`).get() as { n: number }).n;
+  const [total, active, expired, expiringSoon, today, emailPending] = await Promise.all([
+    prisma.user.count(),
+    prisma.user.count({ where: { trialEnd: { gt: now }, isActive: true } }),
+    prisma.user.count({ where: { trialEnd: { lte: now } } }),
+    prisma.user.count({ where: { trialEnd: { gt: now, lte: twoDaysFromNow } } }),
+    prisma.user.count({ where: { createdAt: { gte: startOfToday, lt: startOfTomorrow } } }),
+    prisma.emailQueue.count({ where: { status: "pending" } }),
+  ]);
 
   return NextResponse.json({ total, active, expired, expiringSoon, today, emailPending });
 }

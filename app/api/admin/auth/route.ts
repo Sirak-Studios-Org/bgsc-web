@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import bcrypt from "bcryptjs";
-import { getDb } from "@/lib/db";
+import { prisma } from "@/lib/db";
 import { signAdminToken, ADMIN_COOKIE } from "@/lib/auth";
 
 export async function POST(req: NextRequest) {
@@ -10,11 +10,11 @@ export async function POST(req: NextRequest) {
       return NextResponse.json({ error: "Email and password required." }, { status: 400 });
     }
 
-    const db = getDb();
-    const admin = db.prepare(`SELECT id, email, password_hash, role FROM admin_users WHERE email = ?`)
-      .get(email.trim().toLowerCase()) as { id: number; email: string; password_hash: string; role: string } | undefined;
+    const admin = await prisma.adminUser.findUnique({
+      where: { email: email.trim().toLowerCase() },
+    });
 
-    if (!admin || !bcrypt.compareSync(password, admin.password_hash)) {
+    if (!admin || !bcrypt.compareSync(password, admin.passwordHash)) {
       return NextResponse.json({ error: "Invalid credentials." }, { status: 401 });
     }
 

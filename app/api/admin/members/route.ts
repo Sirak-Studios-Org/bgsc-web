@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
-import { getDb } from "@/lib/db";
+import type { Prisma } from "@prisma/client";
+import { prisma } from "@/lib/db";
 import { getAdminSession } from "@/lib/auth";
 
 export async function GET(req: NextRequest) {
@@ -10,28 +11,37 @@ export async function GET(req: NextRequest) {
   const filter = searchParams.get("filter") ?? "all"; // all | active | expired
   const search = searchParams.get("q") ?? "";
 
-  const db = getDb();
-
-  let where = "WHERE 1=1";
-  const params: string[] = [];
+  const now = new Date();
+  const where: Prisma.UserWhereInput = {};
 
   if (filter === "active") {
-    where += " AND trial_end > datetime('now') AND is_active = 1";
+    where.trialEnd = { gt: now };
+    where.isActive = true;
   } else if (filter === "expired") {
-    where += " AND trial_end <= datetime('now')";
+    where.trialEnd = { lte: now };
   }
 
   if (search) {
-    where += " AND (name LIKE ? OR email LIKE ?)";
-    params.push(`%${search}%`, `%${search}%`);
+    where.OR = [
+      { name: { contains: search, mode: "insensitive" } },
+      { email: { contains: search, mode: "insensitive" } },
+    ];
   }
 
-  const members = db.prepare(`
-    SELECT id, name, email, trial_start, trial_end, is_active, created_at
-    FROM users ${where}
-    ORDER BY created_at DESC
-    LIMIT 200
-  `).all(...params);
+  const members = await prisma.user.findMany({
+    where,
+    select: {
+      id: true,
+      name: true,
+      email: true,
+      trialStart: true,
+      trialEnd: true,
+      isActive: true,
+      createdAt: true,
+    },
+    orderBy: { createdAt: "desc" },
+    take: 200,
+  });
 
   return NextResponse.json({ members });
 }
