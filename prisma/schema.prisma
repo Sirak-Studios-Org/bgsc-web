@@ -51,3 +51,19 @@ model SiteConfig {
 
   @@map("site_config")
 }
+
+model Application {
+  id              Int      @id @default(autoincrement())
+  tier            String
+  name            String
+  email           String
+  phone           String?
+  location        String?
+  trainingHistory String?  @map("training_history")
+  goals           String?
+  whyNow          String?  @map("why_now")
+  status          String   @default("new")
+  createdAt       DateTime @default(now()) @map("created_at")
+
+  @@map("applications")
+}

@@ -69,7 +69,7 @@ export default function StandardSection() {
                 {
                   label: "The Method",
                   left: "Toning, generic content",
-                  right: "Eat clean. Lift heavy. Get coached.",
+                  right: "Nourish. Train. Connect.",
                 },
               ].map((row, i) => (
                 <div

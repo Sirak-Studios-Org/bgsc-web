@@ -3,7 +3,7 @@ import Image from "next/image";
 import React from "react";
 
 const WORDS = [
-  "EAT CLEAN", "LIFT HEAVY", "GET COACHED", "BAD GIRL STRENGTH CLUB",
+  "NOURISH", "TRAIN", "CONNECT", "STRENGTH IS A STANDARD, NOT A MOOD", "BAD GIRL STRENGTH CLUB",
 ];
 
 function Track({ hidden }: { hidden?: boolean }) {

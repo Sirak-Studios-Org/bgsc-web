@@ -61,7 +61,7 @@ export default function VideoSection() {
           transition={{ duration: 0.6 }}
         >
           <h1 className="text-4xl md:text-5xl lg:text-7xl font-black uppercase tracking-tighter text-white drop-shadow-lg">
-            WATCH THIS <span className="text-crimson">NOW!</span>
+            BEFORE YOU <span className="text-crimson">SCROLL!</span>
           </h1>
         </motion.div>
       </div>

@@ -134,7 +134,7 @@ export default function SignupModal({ open, onClose }: Props) {
 
                       <button type="submit" disabled={loading}
                         className="w-full py-4 text-xs font-bold uppercase cursor-pointer bg-soft-white text-black hover:bg-soft-white/90 transition-all duration-300">
-                        {loading ? "Creating Account..." : "Start Free Trial"}
+                        {loading ? "Creating Account..." : "Begin First Week"}
                       </button>
                     </form>
                   </motion.div>

@@ -1,23 +1,33 @@
 "use client";
 
+import { useState } from "react";
 import { motion } from "framer-motion";
+import Link from "next/link";
 import { Display } from "./ui";
 
+type Billing = "monthly" | "annual";
+
+type TierSlug = "independent" | "supported" | "immersed";
+
 type Tier = {
+  slug: TierSlug;
   name: string;
   positioning: string;
   problem: string;
   outcome: string;
   inclusions: string[];
   // TODO[bgsc]: replace placeholder pricing once tier pricing is finalized
-  price: string;
-  cadence: string;
+  monthly: string | null;
+  annualPerMonth: string | null;
+  annualTotal: string | null;
+  applyOnly?: boolean;
   cta: string;
   highlighted?: boolean;
 };
 
 const TIERS: Tier[] = [
   {
+    slug: "independent",
     name: "Independent",
     positioning: "You don't need more time. You need the right system.",
     problem: "Solves the time problem.",
@@ -27,11 +37,13 @@ const TIERS: Tier[] = [
       "Self-paced programming",
       "Private community access",
     ],
-    price: "$49",
-    cadence: "/mo",
+    monthly: "$49",
+    annualPerMonth: "$39",
+    annualTotal: "$468 billed yearly",
     cta: "Start Independent",
   },
   {
+    slug: "supported",
     name: "Supported",
     positioning: "You don't need more motivation. You need accountability.",
     problem: "Solves the consistency problem.",
@@ -41,12 +53,14 @@ const TIERS: Tier[] = [
       "Live remote training sessions",
       "Macro guidance + weekly check-ins",
     ],
-    price: "$149",
-    cadence: "/mo",
+    monthly: "$199",
+    annualPerMonth: "$159",
+    annualTotal: "$1,908 billed yearly",
     cta: "Choose Supported",
     highlighted: true,
   },
   {
+    slug: "immersed",
     name: "Immersed",
     positioning: "You don't need more information. You need guidance.",
     problem: "Solves the certainty problem.",
@@ -56,20 +70,24 @@ const TIERS: Tier[] = [
       "In-person coaching at Boca HQ",
       "Premium accountability + member rhythm",
     ],
-    price: "$299",
-    cadence: "/mo",
+    monthly: null,
+    annualPerMonth: null,
+    annualTotal: null,
+    applyOnly: true,
     cta: "Apply for Immersed",
   },
 ];
 
-export default function TierSection({ onCta }: { onCta: () => void }) {
+export default function TierSection() {
+  const [billing, setBilling] = useState<Billing>("monthly");
+
   return (
     <section id="tiers" className="py-24 px-6" style={{ background: "var(--surface-1)" }}>
       <div className="max-w-6xl mx-auto">
 
         {/* Heading */}
         <motion.div
-          className="max-w-3xl mb-16"
+          className="max-w-3xl mb-12"
           initial={{ opacity: 0, y: 20 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
@@ -85,6 +103,56 @@ export default function TierSection({ onCta }: { onCta: () => void }) {
           >
             Three ways into The New Standard. Each one solves a different problem. Pick the level of support that matches where you are.
           </p>
+        </motion.div>
+
+        {/* Billing toggle */}
+        <motion.div
+          className="flex justify-center mb-12"
+          initial={{ opacity: 0, y: 10 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true }}
+          transition={{ duration: 0.5 }}
+        >
+          <div className="flex flex-col items-center gap-3">
+            <div
+              className="relative grid grid-cols-2 border border-border bg-near-black p-1 w-[280px] md:w-[320px]"
+              role="tablist"
+              aria-label="Billing period"
+            >
+              {/* Sliding pill */}
+              <motion.div
+                aria-hidden
+                className="absolute top-1 bottom-1 left-1 w-[calc(50%-0.25rem)] bg-soft-white"
+                animate={{ x: billing === "monthly" ? 0 : "100%" }}
+                transition={{ type: "spring", stiffness: 400, damping: 32 }}
+                style={{ borderRadius: "2px" }}
+              />
+
+              <button
+                role="tab"
+                aria-selected={billing === "monthly"}
+                onClick={() => setBilling("monthly")}
+                className={`relative z-10 py-2.5 text-[10px] md:text-xs font-bold uppercase tracking-[0.25em] transition-colors duration-300 cursor-pointer text-center ${
+                  billing === "monthly" ? "text-near-black" : "text-soft-white/60 hover:text-soft-white"
+                }`}
+              >
+                Monthly
+              </button>
+              <button
+                role="tab"
+                aria-selected={billing === "annual"}
+                onClick={() => setBilling("annual")}
+                className={`relative z-10 py-2.5 text-[10px] md:text-xs font-bold uppercase tracking-[0.25em] transition-colors duration-300 cursor-pointer text-center ${
+                  billing === "annual" ? "text-near-black" : "text-soft-white/60 hover:text-soft-white"
+                }`}
+              >
+                Annual
+              </button>
+            </div>
+            <p className="text-[10px] font-bold uppercase tracking-[0.3em] text-crimson">
+              Save 20% with annual
+            </p>
+          </div>
         </motion.div>
 
         {/* Tier cards */}
@@ -142,17 +210,36 @@ export default function TierSection({ onCta }: { onCta: () => void }) {
 
               {/* Price */}
               <div className="mt-auto pt-6 border-t border-border">
-                <p
-                  className="text-4xl md:text-5xl font-black text-soft-white leading-none mb-6"
-                  style={{ fontFamily: "var(--font-display, 'Poppins', sans-serif)" }}
-                >
-                  {tier.price}
-                  <span className="text-base font-normal text-ash ml-1">{tier.cadence}</span>
-                </p>
+                {tier.applyOnly ? (
+                  <div className="mb-6">
+                    <p
+                      className="text-4xl md:text-5xl font-black text-soft-white leading-none mb-2"
+                      style={{ fontFamily: "var(--font-display, 'Poppins', sans-serif)" }}
+                    >
+                      Apply
+                    </p>
+                    <p className="text-xs text-ash leading-relaxed">
+                      By application — pricing shared after review.
+                    </p>
+                  </div>
+                ) : (
+                  <div className="mb-6">
+                    <p
+                      className="text-4xl md:text-5xl font-black text-soft-white leading-none mb-2"
+                      style={{ fontFamily: "var(--font-display, 'Poppins', sans-serif)" }}
+                    >
+                      {billing === "monthly" ? tier.monthly : tier.annualPerMonth}
+                      <span className="text-base font-normal text-ash ml-1">/mo</span>
+                    </p>
+                    <p className="text-[11px] text-ash leading-relaxed">
+                      {billing === "monthly" ? "Billed monthly" : tier.annualTotal}
+                    </p>
+                  </div>
+                )}
 
-                <button
-                  onClick={onCta}
-                  className={`w-full h-[52px] uppercase font-bold text-[11px] md:text-xs tracking-[0.25em] transition-all duration-300 cursor-pointer ${
+                <Link
+                  href={`/step-in?tier=${tier.slug}`}
+                  className={`w-full h-[52px] flex items-center justify-center uppercase font-bold text-[11px] md:text-xs tracking-[0.25em] transition-all duration-300 cursor-pointer ${
                     tier.highlighted
                       ? "bg-crimson text-soft-white hover:bg-crimson/85"
                       : "bg-soft-white text-near-black hover:bg-ash"
@@ -160,7 +247,7 @@ export default function TierSection({ onCta }: { onCta: () => void }) {
                   style={{ borderRadius: "2px" }}
                 >
                   {tier.cta}
-                </button>
+                </Link>
               </div>
             </motion.div>
           ))}
