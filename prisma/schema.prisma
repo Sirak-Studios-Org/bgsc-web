@@ -67,3 +67,25 @@ model Application {
 
   @@map("applications")
 }
+
+model SiteContent {
+  key       String   @id
+  value     String
+  updatedAt DateTime @default(now()) @updatedAt @map("updated_at")
+
+  @@map("site_content")
+}
+
+model Event {
+  id        Int      @id @default(autoincrement())
+  type      String
+  path      String?
+  referrer  String?
+  country   String?
+  meta      String?
+  createdAt DateTime @default(now()) @map("created_at")
+
+  @@index([type, createdAt])
+  @@index([createdAt])
+  @@map("events")
+}

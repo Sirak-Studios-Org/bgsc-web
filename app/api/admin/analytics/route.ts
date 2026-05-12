@@ -1,70 +1,85 @@
 import { NextResponse } from "next/server";
 import { getAdminSession } from "@/lib/auth";
-import { getDb } from "@/lib/turso";
+import { prisma } from "@/lib/db";
 
 export async function GET() {
   const session = await getAdminSession();
   if (!session) return NextResponse.json({ error: "Unauthorized." }, { status: 401 });
 
   try {
-    const db = await getDb();
+    const now = new Date();
+    const sevenDaysAgo = new Date(now.getTime() - 7 * 24 * 60 * 60 * 1000);
+    const thirtyDaysAgo = new Date(now.getTime() - 30 * 24 * 60 * 60 * 1000);
+    const startOfToday = new Date(now.getFullYear(), now.getMonth(), now.getDate());
+    const startOfTomorrow = new Date(startOfToday.getTime() + 24 * 60 * 60 * 1000);
 
     const [totalSignups, activeTrials, expiredTrials, todaySignups] = await Promise.all([
-      db.execute(`SELECT COUNT(*) as n FROM users`),
-      db.execute(`SELECT COUNT(*) as n FROM users WHERE trial_end > datetime('now') AND is_active = 1`),
-      db.execute(`SELECT COUNT(*) as n FROM users WHERE trial_end <= datetime('now')`),
-      db.execute(`SELECT COUNT(*) as n FROM users WHERE date(created_at) = date('now')`),
+      prisma.user.count(),
+      prisma.user.count({ where: { trialEnd: { gt: now }, isActive: true } }),
+      prisma.user.count({ where: { trialEnd: { lte: now } } }),
+      prisma.user.count({ where: { createdAt: { gte: startOfToday, lt: startOfTomorrow } } }),
     ]);
 
     const [pageviews7d, ctaClicks7d, videoPlays7d, signups7d] = await Promise.all([
-      db.execute(`SELECT COUNT(*) as n FROM events WHERE type='pageview' AND created_at >= datetime('now', '-7 days')`),
-      db.execute(`SELECT COUNT(*) as n FROM events WHERE type='cta_click' AND created_at >= datetime('now', '-7 days')`),
-      db.execute(`SELECT COUNT(*) as n FROM events WHERE type='video_play' AND created_at >= datetime('now', '-7 days')`),
-      db.execute(`SELECT COUNT(*) as n FROM events WHERE type='signup' AND created_at >= datetime('now', '-7 days')`),
+      prisma.event.count({ where: { type: "pageview", createdAt: { gte: sevenDaysAgo } } }),
+      prisma.event.count({ where: { type: "cta_click", createdAt: { gte: sevenDaysAgo } } }),
+      prisma.event.count({ where: { type: "video_play", createdAt: { gte: sevenDaysAgo } } }),
+      prisma.event.count({ where: { type: "signup", createdAt: { gte: sevenDaysAgo } } }),
     ]);
 
-    // Daily pageviews for the last 30 days
-    const dailyViews = await db.execute(`
-      SELECT date(created_at) as day, COUNT(*) as views
-      FROM events WHERE type='pageview' AND created_at >= datetime('now', '-30 days')
-      GROUP BY day ORDER BY day ASC
-    `);
+    const dailyViewsRaw = await prisma.$queryRaw<{ day: Date; views: bigint }[]>`
+      SELECT date_trunc('day', created_at) AS day, COUNT(*)::bigint AS views
+      FROM events
+      WHERE type = 'pageview' AND created_at >= ${thirtyDaysAgo}
+      GROUP BY day
+      ORDER BY day ASC
+    `;
+    const dailyViews = dailyViewsRaw.map((r) => ({
+      day: r.day.toISOString().slice(0, 10),
+      views: Number(r.views),
+    }));
 
-    // Event type breakdown last 30 days
-    const eventBreakdown = await db.execute(`
-      SELECT type, COUNT(*) as n FROM events
-      WHERE created_at >= datetime('now', '-30 days')
-      GROUP BY type ORDER BY n DESC
-    `);
+    const eventBreakdownRaw = await prisma.event.groupBy({
+      by: ["type"],
+      where: { createdAt: { gte: thirtyDaysAgo } },
+      _count: { _all: true },
+      orderBy: { _count: { type: "desc" } },
+    });
+    const eventBreakdown = eventBreakdownRaw.map((r) => ({ type: r.type, n: r._count._all }));
 
-    // Top referrers last 30 days
-    const topReferrers = await db.execute(`
-      SELECT referrer, COUNT(*) as n FROM events
-      WHERE created_at >= datetime('now', '-30 days') AND referrer IS NOT NULL AND referrer != ''
-      GROUP BY referrer ORDER BY n DESC LIMIT 10
-    `);
+    const topReferrersRaw = await prisma.event.groupBy({
+      by: ["referrer"],
+      where: {
+        createdAt: { gte: thirtyDaysAgo },
+        referrer: { not: null, notIn: [""] },
+      },
+      _count: { _all: true },
+      orderBy: { _count: { referrer: "desc" } },
+      take: 10,
+    });
+    const topReferrers = topReferrersRaw.map((r) => ({ referrer: r.referrer, n: r._count._all }));
 
-    const pv7 = Number((pageviews7d.rows[0]?.n ?? 0));
-    const cta7 = Number((ctaClicks7d.rows[0]?.n ?? 0));
-    const conversionRate = pv7 > 0 ? ((Number((signups7d.rows[0]?.n ?? 0)) / pv7) * 100).toFixed(1) : "0.0";
+    const conversionRate = pageviews7d > 0
+      ? ((signups7d / pageviews7d) * 100).toFixed(1)
+      : "0.0";
 
     return NextResponse.json({
       members: {
-        total: Number(totalSignups.rows[0]?.n ?? 0),
-        active: Number(activeTrials.rows[0]?.n ?? 0),
-        expired: Number(expiredTrials.rows[0]?.n ?? 0),
-        today: Number(todaySignups.rows[0]?.n ?? 0),
+        total: totalSignups,
+        active: activeTrials,
+        expired: expiredTrials,
+        today: todaySignups,
       },
       events7d: {
-        pageviews: pv7,
-        ctaClicks: cta7,
-        videoPlays: Number((videoPlays7d.rows[0]?.n ?? 0)),
-        signups: Number((signups7d.rows[0]?.n ?? 0)),
+        pageviews: pageviews7d,
+        ctaClicks: ctaClicks7d,
+        videoPlays: videoPlays7d,
+        signups: signups7d,
         conversionRate,
       },
-      dailyViews: dailyViews.rows.map(r => ({ day: r.day, views: Number(r.views) })),
-      eventBreakdown: eventBreakdown.rows.map(r => ({ type: r.type, n: Number(r.n) })),
-      topReferrers: topReferrers.rows.map(r => ({ referrer: r.referrer, n: Number(r.n) })),
+      dailyViews,
+      eventBreakdown,
+      topReferrers,
     });
   } catch (err) {
     console.error("[analytics]", err);

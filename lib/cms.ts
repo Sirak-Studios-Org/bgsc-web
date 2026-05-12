@@ -1,15 +1,17 @@
-import { getDb } from "./turso";
+import { prisma } from "./db";
+import type { SiteContent } from "./cms-types";
+import { CMS_DEFAULTS } from "./cms-types";
+
 export type { SiteContent } from "./cms-types";
 export { CMS_DEFAULTS } from "./cms-types";
-import { SiteContent, CMS_DEFAULTS } from "./cms-types";
+export { getConfig } from "./db";
 
 export async function getAllContent(): Promise<SiteContent> {
   try {
-    const db = await getDb();
-    const result = await db.execute("SELECT key, value FROM site_content");
+    const rows = await prisma.siteContent.findMany();
     const stored: Record<string, unknown> = {};
-    for (const row of result.rows) {
-      try { stored[row.key as string] = JSON.parse(row.value as string); } catch { /* skip */ }
+    for (const row of rows) {
+      try { stored[row.key] = JSON.parse(row.value); } catch { /* skip */ }
     }
     return {
       hero: (stored.hero as SiteContent["hero"]) ?? CMS_DEFAULTS.hero,
@@ -31,20 +33,10 @@ export async function getAllContent(): Promise<SiteContent> {
 }
 
 export async function setContent(key: keyof SiteContent, value: unknown) {
-  const db = await getDb();
-  await db.execute({
-    sql: `INSERT INTO site_content (key, value, updated_at) VALUES (?, ?, datetime('now'))
-          ON CONFLICT(key) DO UPDATE SET value = excluded.value, updated_at = excluded.updated_at`,
-    args: [key, JSON.stringify(value)],
+  const json = JSON.stringify(value);
+  await prisma.siteContent.upsert({
+    where: { key },
+    update: { value: json },
+    create: { key, value: json },
   });
-}
-
-export async function getConfig(): Promise<Record<string, string>> {
-  try {
-    const db = await getDb();
-    const result = await db.execute("SELECT key, value FROM site_config");
-    return Object.fromEntries(result.rows.map(r => [r.key as string, r.value as string]));
-  } catch {
-    return { passion_app_url: "http://Badgirlstrengthclub.passion.io", trial_days: "7", cta_url: "", posthog_key: "" };
-  }
 }
