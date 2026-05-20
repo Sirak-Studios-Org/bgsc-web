@@ -23,6 +23,10 @@ const archivoBlack = Archivo_Black({
   variable: "--font-display",
 });
 
+export const viewport = {
+  themeColor: "#8F0000",
+};
+
 export const metadata: Metadata = {
   metadataBase: new URL("https://bgsc.vercel.app"),
   title: "Bad Girl Strength Club — You Were Never Meant to Stay Small",
@@ -51,6 +55,9 @@ export default async function RootLayout({ children }: Readonly<{ children: Reac
 
   return (
     <html lang="en" className={`h-full ${poppins.variable} ${inter.variable} ${archivoBlack.variable}`}>
+      <head>
+        <script dangerouslySetInnerHTML={{ __html: `if('serviceWorker' in navigator){navigator.serviceWorker.register('/sw.js')}` }} />
+      </head>
       <body className="min-h-full flex flex-col max-w-[2000px] mx-auto">
         {children}
         <Suspense>

@@ -26,6 +26,16 @@ async function main() {
     update: {},
     create: { key: "cta_url", value: "" },
   });
+  await prisma.siteConfig.upsert({
+    where: { key: "site_name" },
+    update: {},
+    create: { key: "site_name", value: "Bad Girl Strength Club" },
+  });
+  await prisma.siteConfig.upsert({
+    where: { key: "tagline" },
+    update: {},
+    create: { key: "tagline", value: "Build strength. Build confidence. Build your best life." },
+  });
 
   const existingOwner = await prisma.adminUser.findFirst({ where: { role: "owner" } });
   if (!existingOwner) {
@@ -38,6 +48,18 @@ async function main() {
       },
     });
     console.log(`Seeded owner admin@badgirlstrengthclub.com`);
+  }
+
+  const existingBgscAdmin = await prisma.adminUser.findUnique({ where: { email: "admin@bgsc.com" } });
+  if (!existingBgscAdmin) {
+    await prisma.adminUser.create({
+      data: {
+        email: "admin@bgsc.com",
+        passwordHash: bcrypt.hashSync("bgsc-admin-2024", 10),
+        role: "team",
+      },
+    });
+    console.log("Seeded admin@bgsc.com");
   }
 }
 

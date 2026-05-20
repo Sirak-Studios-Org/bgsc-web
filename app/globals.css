@@ -132,3 +132,13 @@ body {
   100% { transform: translate(0, 0) rotate(0deg); }
 }
 .tilt-n-move-shaking { animation: tilt-n-move-shaking var(--shake-duration, 0.4s) ease-in-out infinite; }
+
+:root {
+  --safe-top: env(safe-area-inset-top, 0px);
+  --safe-bottom: env(safe-area-inset-bottom, 0px);
+}
+
+body {
+  padding-top: var(--safe-top);
+  padding-bottom: var(--safe-bottom);
+}

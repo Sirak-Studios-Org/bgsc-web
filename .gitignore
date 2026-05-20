@@ -43,3 +43,13 @@ next-env.d.ts
 
 # local sqlite (legacy)
 /data
+
+# downloaded content (videos/images — stored in R2, not git)
+/content
+
+# Capacitor
+android/.gradle
+android/app/build
+android/.idea
+ios/App/Pods
+ios/App/DerivedData

@@ -4,10 +4,19 @@ import { useEffect, useState, useCallback } from "react";
 import { useRouter } from "next/navigation";
 import AdminNav from "@/components/AdminNav";
 
+type PortalStats = {
+  plan: string;
+  lessonsCompleted: number;
+  currentStreak: number;
+  totalXp: number;
+  lastActive: string | null;
+};
+
 type Member = {
   id: number; name: string; email: string;
   trial_start: string; trial_end: string;
   is_active: number; created_at: string;
+  portal_stats?: PortalStats;
 };
 
 function trialStatus(end: string) {
@@ -86,7 +95,7 @@ export default function AdminMembers() {
             <table className="w-full text-sm border-collapse">
               <thead>
                 <tr style={{ borderBottom: "1px solid var(--border)" }}>
-                  {["Name", "Email", "Joined", "Trial End", "Status"].map(h => (
+                  {["Name", "Email", "Joined", "Trial End", "Status", "Plan", "Lessons", "Streak", "XP"].map(h => (
                     <th key={h} className="text-left py-3 pr-6 text-xs uppercase tracking-widest"
                       style={{ color: "rgba(255,255,255,0.35)", fontFamily: "var(--font-display)" }}>
                       {h}
@@ -113,6 +122,21 @@ export default function AdminMembers() {
                           style={{ color: status.color, fontFamily: "var(--font-display)" }}>
                           {status.label}
                         </span>
+                      </td>
+                      <td className="py-4 pr-6">
+                        <span className="text-xs uppercase tracking-wide"
+                          style={{ color: "rgba(255,255,255,0.5)", fontFamily: "var(--font-display)" }}>
+                          {m.portal_stats?.plan ?? "—"}
+                        </span>
+                      </td>
+                      <td className="py-4 pr-6" style={{ color: "rgba(255,255,255,0.4)", fontFamily: "var(--font-body)" }}>
+                        {m.portal_stats?.lessonsCompleted ?? "—"}
+                      </td>
+                      <td className="py-4 pr-6" style={{ color: "rgba(255,255,255,0.4)", fontFamily: "var(--font-body)" }}>
+                        {m.portal_stats != null ? `🔥 ${m.portal_stats.currentStreak}` : "—"}
+                      </td>
+                      <td className="py-4 pr-6" style={{ color: "rgba(255,255,255,0.4)", fontFamily: "var(--font-body)" }}>
+                        {m.portal_stats?.totalXp ?? "—"}
                       </td>
                     </tr>
                   );

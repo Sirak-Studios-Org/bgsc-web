@@ -1,0 +1,7 @@
+<?xml version='1.0' encoding='utf-8'?>
+<resources>
+    <string name="app_name">Bad Girl Strength Club</string>
+    <string name="title_activity_main">Bad Girl Strength Club</string>
+    <string name="package_name">club.badgirlstrength.app</string>
+    <string name="custom_url_scheme">club.badgirlstrength.app</string>
+</resources>

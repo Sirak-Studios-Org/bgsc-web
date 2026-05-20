@@ -17,6 +17,20 @@ model User {
   createdAt    DateTime @default(now()) @map("created_at")
 
   emailQueue EmailQueue[]
+  subscription         Subscription?
+  onboarding           OnboardingResponse?
+  lessonProgress       LessonProgress[]
+  journalEntries       JournalEntry[]
+  streak               UserStreak?
+  badges               UserBadge[]
+  trackingGoals        TrackingGoal[]
+  checkIns             CheckIn[]
+  posts                Post[]
+  comments             Comment[]
+  reactions            PostReaction[]
+  dmsSent              DirectMessage[] @relation("DmFrom")
+  dmsReceived          DirectMessage[] @relation("DmTo")
+  squadMemberships     SquadMember[]
 
   @@map("users")
 }
@@ -88,4 +102,279 @@ model Event {
   @@index([type, createdAt])
   @@index([createdAt])
   @@map("events")
+}
+
+model Subscription {
+  id                     Int       @id @default(autoincrement())
+  userId                 Int       @unique @map("user_id")
+  stripeSubscriptionId   String    @unique @map("stripe_subscription_id")
+  stripePriceId          String    @map("stripe_price_id")
+  stripeCustomerId       String    @map("stripe_customer_id")
+  plan                   String    // "club" | "premium" | "vip" | "trial"
+  status                 String    @default("active") // "active" | "past_due" | "canceled" | "paused"
+  currentPeriodEnd       DateTime  @map("current_period_end")
+  cancelAtPeriodEnd      Boolean   @default(false) @map("cancel_at_period_end")
+  pauseUntil             DateTime? @map("pause_until")
+  createdAt              DateTime  @default(now()) @map("created_at")
+  updatedAt              DateTime  @updatedAt @map("updated_at")
+  user                   User      @relation(fields: [userId], references: [id])
+  @@map("subscriptions")
+}
+
+model OnboardingResponse {
+  userId              Int       @id @map("user_id")
+  goal                String
+  experienceLevel     String    @map("experience_level")
+  daysPerWeek         String    @map("days_per_week")
+  equipment           String
+  challenge           String
+  recommendedCourse   String?   @map("recommended_course")
+  completedAt         DateTime  @default(now()) @map("completed_at")
+  user                User      @relation(fields: [userId], references: [id])
+  @@map("onboarding_responses")
+}
+
+model Course {
+  id           Int       @id @default(autoincrement())
+  slug         String    @unique
+  title        String
+  description  String    @default("")
+  coverImageKey String?  @map("cover_image_key")
+  sortOrder    Int       @default(0) @map("sort_order")
+  planRequired String    @default("[]") @map("plan_required") // JSON array: ["club","vip"]
+  isPublished  Boolean   @default(false) @map("is_published")
+  createdAt    DateTime  @default(now()) @map("created_at")
+  updatedAt    DateTime  @updatedAt @map("updated_at")
+  lessons      Lesson[]
+  @@map("courses")
+}
+
+model Lesson {
+  id              Int       @id @default(autoincrement())
+  courseId        Int       @map("course_id")
+  slug            String
+  title           String
+  description     String    @default("")
+  coverImageKey   String?   @map("cover_image_key")
+  durationMinutes Int       @default(0) @map("duration_minutes")
+  sortOrder       Int       @default(0) @map("sort_order")
+  isPublished     Boolean   @default(false) @map("is_published")
+  dripDays        Int       @default(0) @map("drip_days")
+  lessonType      String    @default("lesson") @map("lesson_type") // "lesson"|"workout"|"nutrition"
+  completionXp    Int       @default(50) @map("completion_xp")
+  createdAt       DateTime  @default(now()) @map("created_at")
+  updatedAt       DateTime  @updatedAt @map("updated_at")
+  course          Course    @relation(fields: [courseId], references: [id], onDelete: Cascade)
+  widgets         Widget[]
+  progress        LessonProgress[]
+  journalEntries  JournalEntry[]
+  @@unique([courseId, slug])
+  @@map("lessons")
+}
+
+model Widget {
+  id          Int      @id @default(autoincrement())
+  lessonId    Int      @map("lesson_id")
+  type        String   // "clip"|"text"|"timer"|"textquestion"|"pdf"
+  sortOrder   Int      @default(0) @map("sort_order")
+  content     String   @default("{}") // JSON
+  lesson      Lesson   @relation(fields: [lessonId], references: [id], onDelete: Cascade)
+  journalEntries JournalEntry[]
+  @@map("widgets")
+}
+
+model LessonProgress {
+  id           Int       @id @default(autoincrement())
+  userId       Int       @map("user_id")
+  lessonId     Int       @map("lesson_id")
+  status       String    @default("not_started") // "not_started"|"in_progress"|"completed"
+  watchPercent Int       @default(0) @map("watch_percent")
+  completedAt  DateTime? @map("completed_at")
+  user         User      @relation(fields: [userId], references: [id])
+  lesson       Lesson    @relation(fields: [lessonId], references: [id])
+  @@unique([userId, lessonId])
+  @@map("lesson_progress")
+}
+
+model JournalEntry {
+  id          Int      @id @default(autoincrement())
+  userId      Int      @map("user_id")
+  widgetId    Int      @map("widget_id")
+  lessonId    Int      @map("lesson_id")
+  entryDate   DateTime @default(now()) @map("entry_date")
+  value       String   @default("{}") // JSON: {sets:[{reps,weight}]} or {text:""}
+  isPr        Boolean  @default(false) @map("is_pr")
+  createdAt   DateTime @default(now()) @map("created_at")
+  user        User     @relation(fields: [userId], references: [id])
+  widget      Widget   @relation(fields: [widgetId], references: [id])
+  lesson      Lesson   @relation(fields: [lessonId], references: [id])
+  @@index([userId, widgetId])
+  @@map("journal_entries")
+}
+
+model UserStreak {
+  userId               Int      @id @map("user_id")
+  currentStreak        Int      @default(0) @map("current_streak")
+  longestStreak        Int      @default(0) @map("longest_streak")
+  lastActiveDate       DateTime? @map("last_active_date")
+  freezesAvailable     Int      @default(1) @map("freezes_available")
+  freezesUsedThisWeek  Int      @default(0) @map("freezes_used_this_week")
+  weeklyResetDate      DateTime? @map("weekly_reset_date")
+  totalXp              Int      @default(0) @map("total_xp")
+  user                 User     @relation(fields: [userId], references: [id])
+  @@map("user_streaks")
+}
+
+model Badge {
+  id          Int       @id @default(autoincrement())
+  slug        String    @unique
+  name        String
+  description String
+  iconEmoji   String    @map("icon_emoji")
+  criteria    String    @default("{}") @map("criteria") // JSON: {type:"lessons_complete",threshold:10}
+  xpReward    Int       @default(100) @map("xp_reward")
+  tier        Int       @default(1) // 1=bronze, 2=silver, 3=gold
+  userBadges  UserBadge[]
+  @@map("badges")
+}
+
+model UserBadge {
+  id       Int      @id @default(autoincrement())
+  userId   Int      @map("user_id")
+  badgeId  Int      @map("badge_id")
+  earnedAt DateTime @default(now()) @map("earned_at")
+  user     User     @relation(fields: [userId], references: [id])
+  badge    Badge    @relation(fields: [badgeId], references: [id])
+  @@unique([userId, badgeId])
+  @@map("user_badges")
+}
+
+model TrackingGoal {
+  id             Int       @id @default(autoincrement())
+  userId         Int       @map("user_id")
+  name           String
+  type           String    // "numeric"|"boolean"|"photo"
+  unit           String    @default("")
+  cadence        String    @default("weekly") // "daily"|"weekly"
+  isCoachVisible Boolean   @default(true) @map("is_coach_visible")
+  sortOrder      Int       @default(0) @map("sort_order")
+  createdAt      DateTime  @default(now()) @map("created_at")
+  user           User      @relation(fields: [userId], references: [id])
+  checkIns       CheckIn[]
+  @@map("tracking_goals")
+}
+
+model CheckIn {
+  id           Int          @id @default(autoincrement())
+  goalId       Int          @map("goal_id")
+  userId       Int          @map("user_id")
+  checkinDate  DateTime     @map("checkin_date")
+  numericValue Float?       @map("numeric_value")
+  boolValue    Boolean?     @map("bool_value")
+  photoKey     String?      @map("photo_key")
+  notes        String?
+  createdAt    DateTime     @default(now()) @map("created_at")
+  goal         TrackingGoal @relation(fields: [goalId], references: [id])
+  user         User         @relation(fields: [userId], references: [id])
+  @@map("check_ins")
+}
+
+model Community {
+  id                  Int       @id @default(autoincrement())
+  name                String
+  slug                String    @unique
+  description         String    @default("")
+  planRequired        String    @default("[]") @map("plan_required") // JSON: ["club","vip"]
+  canMessageEachOther Boolean   @default(true) @map("can_message_each_other")
+  canMessageCreator   Boolean   @default(false) @map("can_message_creator")
+  sortOrder           Int       @default(0) @map("sort_order")
+  channels            Channel[]
+  @@map("communities")
+}
+
+model Channel {
+  id          Int       @id @default(autoincrement())
+  communityId Int       @map("community_id")
+  name        String
+  slug        String
+  description String    @default("")
+  sortOrder   Int       @default(0) @map("sort_order")
+  community   Community @relation(fields: [communityId], references: [id])
+  posts       Post[]
+  @@unique([communityId, slug])
+  @@map("channels")
+}
+
+model Post {
+  id          Int            @id @default(autoincrement())
+  channelId   Int            @map("channel_id")
+  authorId    Int            @map("author_id")
+  content     String
+  mediaKeys   String         @default("[]") @map("media_keys") // JSON array of R2 keys
+  isPinned    Boolean        @default(false) @map("is_pinned")
+  isAdminPost Boolean        @default(false) @map("is_admin_post")
+  createdAt   DateTime       @default(now()) @map("created_at")
+  updatedAt   DateTime       @updatedAt @map("updated_at")
+  deletedAt   DateTime?      @map("deleted_at")
+  channel     Channel        @relation(fields: [channelId], references: [id])
+  author      User           @relation(fields: [authorId], references: [id])
+  reactions   PostReaction[]
+  comments    Comment[]
+  @@map("posts")
+}
+
+model PostReaction {
+  id     Int    @id @default(autoincrement())
+  postId Int    @map("post_id")
+  userId Int    @map("user_id")
+  type   String // "heart"|"fire"|"flex"|"cheer"|"strong"
+  post   Post   @relation(fields: [postId], references: [id])
+  user   User   @relation(fields: [userId], references: [id])
+  @@unique([postId, userId, type])
+  @@map("post_reactions")
+}
+
+model Comment {
+  id        Int       @id @default(autoincrement())
+  postId    Int       @map("post_id")
+  authorId  Int       @map("author_id")
+  content   String
+  createdAt DateTime  @default(now()) @map("created_at")
+  deletedAt DateTime? @map("deleted_at")
+  post      Post      @relation(fields: [postId], references: [id])
+  author    User      @relation(fields: [authorId], references: [id])
+  @@map("comments")
+}
+
+model DirectMessage {
+  id        Int      @id @default(autoincrement())
+  fromId    Int      @map("from_id")
+  toId      Int      @map("to_id")
+  content   String
+  readAt    DateTime? @map("read_at")
+  createdAt DateTime  @default(now()) @map("created_at")
+  from      User     @relation("DmFrom", fields: [fromId], references: [id])
+  to        User     @relation("DmTo", fields: [toId], references: [id])
+  @@map("direct_messages")
+}
+
+model Squad {
+  id         Int          @id @default(autoincrement())
+  name       String
+  coachNote  String?      @map("coach_note")
+  createdAt  DateTime     @default(now()) @map("created_at")
+  members    SquadMember[]
+  @@map("squads")
+}
+
+model SquadMember {
+  id       Int    @id @default(autoincrement())
+  squadId  Int    @map("squad_id")
+  userId   Int    @map("user_id")
+  role     String @default("member") // "member"|"leader"
+  joinedAt DateTime @default(now()) @map("joined_at")
+  squad    Squad  @relation(fields: [squadId], references: [id])
+  user     User   @relation(fields: [userId], references: [id])
+  @@unique([squadId, userId])
+  @@map("squad_members")
 }

@@ -29,7 +29,7 @@ export async function GET(req: NextRequest) {
       ];
     }
 
-    const members = await prisma.user.findMany({
+    const users = await prisma.user.findMany({
       where,
       select: {
         id: true,
@@ -39,10 +39,30 @@ export async function GET(req: NextRequest) {
         trialEnd: true,
         isActive: true,
         createdAt: true,
+        subscription: { select: { plan: true, status: true, currentPeriodEnd: true } },
+        streak: { select: { currentStreak: true, totalXp: true, lastActiveDate: true } },
+        lessonProgress: { where: { status: "completed" }, select: { id: true } },
       },
       orderBy: { createdAt: "desc" },
       take: 200,
     });
+
+    const members = users.map((u) => ({
+      id: u.id,
+      name: u.name,
+      email: u.email,
+      trial_start: u.trialStart,
+      trial_end: u.trialEnd,
+      is_active: u.isActive ? 1 : 0,
+      created_at: u.createdAt,
+      portal_stats: {
+        plan: u.subscription?.plan ?? "trial",
+        lessonsCompleted: u.lessonProgress.length,
+        currentStreak: u.streak?.currentStreak ?? 0,
+        totalXp: u.streak?.totalXp ?? 0,
+        lastActive: u.streak?.lastActiveDate ?? null,
+      },
+    }));
 
     return NextResponse.json({ members });
   } catch {
