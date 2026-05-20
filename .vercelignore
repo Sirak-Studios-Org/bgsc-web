@@ -1,0 +1,9 @@
+# Local content files (videos/images served from R2 in production)
+content/
+
+# Android/iOS native projects
+android/
+ios/
+
+# Scripts
+scripts/

@@ -1,9 +1,9 @@
 "use client";
-import { useEffect, useState } from "react";
+import { Suspense, useEffect, useState } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import Image from "next/image";
 
-export default function PortalRegister() {
+function RegisterHandler() {
   const router = useRouter();
   const params = useSearchParams();
   const [status, setStatus] = useState<"loading" | "error">("loading");
@@ -26,9 +26,7 @@ export default function PortalRegister() {
   }, [params, router]);
 
   return (
-    <div className="min-h-screen flex flex-col items-center justify-center px-4"
-      style={{ background: "var(--near-black)" }}>
-      <Image src="/images/primary-logo.svg" alt="BGSC" width={120} height={40} className="mx-auto mb-8 h-10 w-auto" />
+    <>
       {status === "loading" ? (
         <div className="text-center">
           <div className="w-8 h-8 border-2 rounded-full mx-auto mb-4 animate-spin"
@@ -42,6 +40,24 @@ export default function PortalRegister() {
           <a href="/" style={{ color: "var(--crimson)" }} className="text-sm uppercase tracking-widest">← Back to home</a>
         </div>
       )}
+    </>
+  );
+}
+
+export default function PortalRegister() {
+  return (
+    <div className="min-h-screen flex flex-col items-center justify-center px-4"
+      style={{ background: "var(--near-black)" }}>
+      <Image src="/images/primary-logo.svg" alt="BGSC" width={120} height={40} className="mx-auto mb-8 h-10 w-auto" />
+      <Suspense fallback={
+        <div className="text-center">
+          <div className="w-8 h-8 border-2 rounded-full mx-auto mb-4 animate-spin"
+            style={{ borderColor: "var(--border)", borderTopColor: "var(--crimson)" }} />
+          <p style={{ color: "var(--ash)" }}>Setting up your membership...</p>
+        </div>
+      }>
+        <RegisterHandler />
+      </Suspense>
     </div>
   );
 }
