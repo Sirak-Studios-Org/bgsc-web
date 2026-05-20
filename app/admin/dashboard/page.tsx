@@ -3,7 +3,7 @@
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { LineChart, Line, XAxis, YAxis, Tooltip, ResponsiveContainer, CartesianGrid } from "recharts";
-import AdminNav from "@/components/AdminNav";
+import AdminShell from "@/components/admin/AdminShell";
 
 type Analytics = {
   members: { total: number; active: number; expired: number; today: number };
@@ -40,9 +40,7 @@ export default function AdminDashboard() {
   }, [router]);
 
   return (
-    <div className="min-h-screen" style={{ background: "var(--near-black)", color: "#fff" }}>
-      <AdminNav />
-
+    <AdminShell>
       <div className="max-w-6xl mx-auto px-4 md:px-8 py-6 md:py-10">
 
         {error && (
@@ -133,6 +131,6 @@ export default function AdminDashboard() {
           </a>
         </div>
       </div>
-    </div>
+    </AdminShell>
   );
 }

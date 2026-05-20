@@ -2,7 +2,7 @@
 
 import { useEffect, useState, use } from "react";
 import { useRouter } from "next/navigation";
-import AdminNav from "@/components/AdminNav";
+import AdminShell from "@/components/admin/AdminShell";
 
 const PLAN_OPTIONS = ["club", "premium", "vip"];
 
@@ -168,20 +168,18 @@ export default function CourseEditorPage({ params }: { params: Promise<{ id: str
 
   if (loading) {
     return (
-      <div className="min-h-screen" style={{ background: "var(--near-black)", color: "#fff" }}>
-        <AdminNav />
+      <AdminShell>
         <div className="max-w-4xl mx-auto px-4 py-20 text-center">
           <p style={{ color: "rgba(255,255,255,0.3)" }}>Loading…</p>
         </div>
-      </div>
+      </AdminShell>
     );
   }
 
   const sortedLessons = [...(course?.lessons ?? [])].sort((a, b) => a.sortOrder - b.sortOrder);
 
   return (
-    <div className="min-h-screen" style={{ background: "var(--near-black)", color: "#fff" }}>
-      <AdminNav />
+    <AdminShell>
       <div className="max-w-4xl mx-auto px-4 md:px-8 py-6 md:py-10">
 
         <div className="flex items-center gap-4 mb-8">
@@ -354,6 +352,6 @@ export default function CourseEditorPage({ params }: { params: Promise<{ id: str
           </form>
         </div>
       </div>
-    </div>
+    </AdminShell>
   );
 }

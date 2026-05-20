@@ -2,7 +2,7 @@
 
 import { useEffect, useState, useCallback } from "react";
 import { useRouter } from "next/navigation";
-import AdminNav from "@/components/AdminNav";
+import AdminShell from "@/components/admin/AdminShell";
 
 type PostItem = {
   id: number;
@@ -86,8 +86,7 @@ export default function AdminCommunity() {
   }
 
   return (
-    <div className="min-h-screen" style={{ background: "var(--near-black)", color: "#fff" }}>
-      <AdminNav />
+    <AdminShell>
       <div className="max-w-6xl mx-auto px-4 md:px-8 py-6 md:py-10">
 
         <p className="text-xs uppercase tracking-[0.3em] mb-6"
@@ -233,6 +232,6 @@ export default function AdminCommunity() {
           </>
         )}
       </div>
-    </div>
+    </AdminShell>
   );
 }

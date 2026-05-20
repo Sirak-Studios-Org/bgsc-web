@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useState, useCallback } from "react";
-import AdminNav from "@/components/AdminNav";
+import AdminShell from "@/components/admin/AdminShell";
 import { SiteContent, CMS_DEFAULTS } from "@/lib/cms-types";
 
 const SECTIONS: { key: keyof SiteContent; label: string }[] = [
@@ -282,7 +282,7 @@ export default function ContentPage() {
 
   useEffect(() => {
     fetch("/api/admin/content")
-      .then(r => r.json())
+      .then(r => r.ok ? r.json() : Promise.reject())
       .then(data => { setContent(data); setLoading(false); })
       .catch(() => setLoading(false));
   }, []);
@@ -309,8 +309,7 @@ export default function ContentPage() {
   }
 
   return (
-    <div className="min-h-screen" style={{ background: "var(--near-black)", color: "#fff" }}>
-      <AdminNav />
+    <AdminShell>
       <div className="max-w-6xl mx-auto px-4 md:px-8 py-6 md:py-10">
         <div className="flex items-center justify-between mb-6">
           <h1 className="text-xs uppercase tracking-[0.3em]" style={{ color: "rgba(255,255,255,0.35)", fontFamily: "var(--font-display)" }}>Site Content</h1>
@@ -364,6 +363,6 @@ export default function ContentPage() {
           </div>
         </div>
       </div>
-    </div>
+    </AdminShell>
   );
 }

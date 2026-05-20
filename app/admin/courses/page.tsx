@@ -3,7 +3,7 @@
 import { useEffect, useState, useCallback } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
-import AdminNav from "@/components/AdminNav";
+import AdminShell from "@/components/admin/AdminShell";
 
 type Course = {
   id: number;
@@ -63,8 +63,7 @@ export default function AdminCourses() {
   }
 
   return (
-    <div className="min-h-screen" style={{ background: "var(--near-black)", color: "#fff" }}>
-      <AdminNav />
+    <AdminShell>
       <div className="max-w-6xl mx-auto px-4 md:px-8 py-6 md:py-10">
 
         <div className="flex items-center justify-between mb-8">
@@ -159,6 +158,6 @@ export default function AdminCourses() {
           </div>
         )}
       </div>
-    </div>
+    </AdminShell>
   );
 }

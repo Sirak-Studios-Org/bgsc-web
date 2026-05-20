@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import AdminNav from "@/components/AdminNav";
+import AdminShell from "@/components/admin/AdminShell";
 
 export default function SettingsPage() {
   const [config, setConfig] = useState({ passion_app_url: "", trial_days: "7", cta_url: "", posthog_key: "" });
@@ -38,8 +38,7 @@ export default function SettingsPage() {
   }
 
   return (
-    <div className="min-h-screen" style={{ background: "var(--near-black)", color: "#fff" }}>
-      <AdminNav />
+    <AdminShell>
       <div className="max-w-2xl mx-auto px-4 md:px-8 py-6 md:py-10">
         <p className="text-xs uppercase tracking-[0.3em] mb-6" style={{ color: "rgba(255,255,255,0.35)", fontFamily: "var(--font-display)" }}>Settings</p>
         <form onSubmit={save} className="space-y-6">
@@ -58,6 +57,6 @@ export default function SettingsPage() {
           </div>
         </form>
       </div>
-    </div>
+    </AdminShell>
   );
 }
