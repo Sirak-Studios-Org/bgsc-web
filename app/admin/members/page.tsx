@@ -22,7 +22,7 @@ type Member = {
 
 function trialStatus(end: string) {
   const now = Date.now();
-  const endMs = new Date(end + "Z").getTime();
+  const endMs = end ? new Date(end).getTime() : 0;
   const diff = endMs - now;
   if (diff <= 0) return { label: "Expired", color: "rgba(255,255,255,0.25)" };
   const days = Math.ceil(diff / 86400000);
@@ -63,7 +63,7 @@ export default function AdminMembers() {
   function openEdit(m: Member) {
     if (expanded === m.id) { setExpanded(null); setEdit(null); return; }
     setExpanded(m.id);
-    const end = m.trial_end ? new Date(m.trial_end + "Z") : new Date();
+    const end = m.trial_end ? new Date(m.trial_end) : new Date();
     setEdit({
       memberId: m.id,
       trialEnd: end.toISOString().slice(0, 10),
@@ -166,10 +166,10 @@ export default function AdminMembers() {
                       <td className="py-4 pr-6" style={{ fontFamily: "var(--font-body)" }}>{m.name}</td>
                       <td className="py-4 pr-6" style={{ color: "rgba(255,255,255,0.6)", fontFamily: "var(--font-body)" }}>{m.email}</td>
                       <td className="py-4 pr-6" style={{ color: "rgba(255,255,255,0.4)", fontFamily: "var(--font-body)" }}>
-                        {new Date(m.created_at + "Z").toLocaleDateString()}
+                        {m.created_at ? new Date(m.created_at).toLocaleDateString() : "—"}
                       </td>
                       <td className="py-4 pr-6" style={{ color: "rgba(255,255,255,0.4)", fontFamily: "var(--font-body)" }}>
-                        {new Date(m.trial_end + "Z").toLocaleDateString()}
+                        {m.trial_end ? new Date(m.trial_end).toLocaleDateString() : "—"}
                       </td>
                       <td className="py-4 pr-6">
                         <span className="text-xs font-bold uppercase tracking-wide"
