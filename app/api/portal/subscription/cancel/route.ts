@@ -8,7 +8,7 @@ export async function POST(req: Request) {
   const session = await getMemberSession();
   if (!session) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
 
-  const body = await req.json() as { reason?: string; offer?: "pause" | "discount" | "extend" };
+  const body = await req.json().catch(() => ({})) as { reason?: string; offer?: "pause" | "discount" | "extend" };
   const { offer } = body;
 
   const subscription = await prisma.subscription.findUnique({

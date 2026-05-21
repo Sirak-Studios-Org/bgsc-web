@@ -21,7 +21,7 @@ export async function POST() {
     return NextResponse.json({ error: "No subscription found" }, { status: 404 });
   }
 
-  const plan = priceIdToPlan(subscription.stripePriceId);
+  const plan = priceIdToPlan(subscription.stripePriceId ?? "");
   const annualPriceId = ANNUAL_PRICE[plan];
 
   if (!annualPriceId) {

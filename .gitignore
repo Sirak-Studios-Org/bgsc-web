@@ -44,6 +44,9 @@ next-env.d.ts
 # local sqlite (legacy)
 /data
 
+# local scripts (may contain credentials)
+/scripts/*.py
+
 # downloaded content (videos/images — stored in R2, not git)
 /content
 

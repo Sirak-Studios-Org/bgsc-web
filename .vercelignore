@@ -1,5 +1,5 @@
 # Local content files (videos/images served from R2 in production)
-content/
+/content
 
 # Android/iOS native projects
 android/

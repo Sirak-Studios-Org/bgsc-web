@@ -3,6 +3,38 @@
 import { useEffect, useState } from "react";
 import AdminShell from "@/components/admin/AdminShell";
 
+function BackfillButton() {
+  const [status, setStatus] = useState<"idle" | "running" | "done" | "error">("idle");
+  const [msg, setMsg] = useState("");
+
+  async function run() {
+    setStatus("running");
+    const res = await fetch("/api/admin/backfill-subscriptions", { method: "POST" });
+    const data = await res.json();
+    if (res.ok) { setStatus("done"); setMsg(data.message); }
+    else { setStatus("error"); setMsg(data.error ?? "Failed."); }
+  }
+
+  return (
+    <div className="p-5" style={{ background: "var(--surface-1)", border: "1px solid var(--border)" }}>
+      <p className="text-xs uppercase tracking-widest mb-1.5" style={{ color: "rgba(255,255,255,0.4)", fontFamily: "var(--font-display)" }}>
+        Backfill Member Subscriptions
+      </p>
+      <p className="text-xs mb-4" style={{ color: "rgba(255,255,255,0.3)" }}>
+        Creates a "club" subscription for every member who has no subscription record (e.g. imported Passion members).
+      </p>
+      <div className="flex items-center gap-4">
+        <button onClick={run} disabled={status === "running" || status === "done"}
+          className="px-5 py-2 text-xs uppercase tracking-widest font-black transition-opacity disabled:opacity-40"
+          style={{ background: "var(--surface-2)", border: "1px solid var(--border)", color: "#fff", fontFamily: "var(--font-display)" }}>
+          {status === "running" ? "Running…" : status === "done" ? "Done" : "Run Backfill"}
+        </button>
+        {msg && <span className="text-xs" style={{ color: status === "error" ? "var(--crimson)" : "#4ade80" }}>{msg}</span>}
+      </div>
+    </div>
+  );
+}
+
 export default function SettingsPage() {
   const [config, setConfig] = useState({ passion_app_url: "", trial_days: "7", cta_url: "", posthog_key: "" });
   const [saving, setSaving] = useState(false);
@@ -56,6 +88,12 @@ export default function SettingsPage() {
             {msg && <span className="text-xs" style={{ color: msg === "Saved." ? "#4ade80" : "var(--crimson)" }}>{msg}</span>}
           </div>
         </form>
+
+        <hr className="my-10" style={{ borderColor: "var(--border)" }} />
+        <p className="text-xs uppercase tracking-[0.3em] mb-6" style={{ color: "rgba(255,255,255,0.35)", fontFamily: "var(--font-display)" }}>Maintenance</p>
+        <div className="space-y-4">
+          <BackfillButton />
+        </div>
       </div>
     </AdminShell>
   );
