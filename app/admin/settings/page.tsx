@@ -21,7 +21,7 @@ function BackfillButton() {
         Backfill Member Subscriptions
       </p>
       <p className="text-xs mb-4" style={{ color: "rgba(255,255,255,0.3)" }}>
-        Creates a "club" subscription for every member who has no subscription record (e.g. imported Passion members).
+        Creates a "club" subscription for every member who has no subscription record (e.g. migrated or manually-added members).
       </p>
       <div className="flex items-center gap-4">
         <button onClick={run} disabled={status === "running" || status === "done"}
@@ -36,7 +36,7 @@ function BackfillButton() {
 }
 
 export default function SettingsPage() {
-  const [config, setConfig] = useState({ passion_app_url: "", trial_days: "7", cta_url: "", posthog_key: "" });
+  const [config, setConfig] = useState({ trial_days: "7", cta_url: "", posthog_key: "" });
   const [saving, setSaving] = useState(false);
   const [msg, setMsg] = useState("");
 
@@ -74,7 +74,6 @@ export default function SettingsPage() {
       <div className="max-w-2xl mx-auto px-4 md:px-8 py-6 md:py-10">
         <p className="text-xs uppercase tracking-[0.3em] mb-6" style={{ color: "rgba(255,255,255,0.35)", fontFamily: "var(--font-display)" }}>Settings</p>
         <form onSubmit={save} className="space-y-6">
-          <Field label="Passion App URL" k="passion_app_url" desc="Where members are redirected after signup." />
           <Field label="Trial Duration (days)" k="trial_days" desc="How many days the free trial lasts." />
           <Field label="CTA URL" k="cta_url" desc="External checkout URL (Kajabi, Thrivecart, etc). Leave blank to use the signup modal." />
           <Field label="PostHog API Key" k="posthog_key" desc="Add your PostHog project API key to enable session analytics and heatmaps." />

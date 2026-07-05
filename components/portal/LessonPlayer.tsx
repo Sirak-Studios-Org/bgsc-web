@@ -38,7 +38,7 @@ export default function LessonPlayer({ lesson, widgets, isCompleted, nextLesson,
       {widgets.map(widget => {
         const content = (() => { try { return JSON.parse(widget.content); } catch { return {}; } })();
         // Normalize widget types across seed sources: the DB holds "video"/"question"
-        // (Passion import) while older code used "clip"/"textquestion".
+        // (migrated content) while older code used "clip"/"textquestion".
         const type = widget.type;
 
         if (type === "video" || type === "clip") {

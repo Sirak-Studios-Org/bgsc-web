@@ -14,15 +14,10 @@ import ObjectionsSection from "@/components/ObjectionsSection";
 import CloseSection from "@/components/CloseSection";
 import StickyCtaBar from "@/components/StickyCtaBar";
 
-const PASSION_URL = "https://badgirlstrengthclub.passion.io/";
-
 export default function VSLPage() {
   const router = useRouter();
 
   const goToStepIn = () => router.push("/step-in");
-  const goToPassion = () => {
-    window.location.href = PASSION_URL;
-  };
 
   return (
     <main className="relative overflow-x-hidden">
@@ -43,7 +38,7 @@ export default function VSLPage() {
       <div className="section-divider" />
       <CultureSection />
       <div className="section-divider" />
-      <BocaHqSection onCta={goToPassion} />
+      <BocaHqSection onCta={goToStepIn} />
       <div className="section-divider" />
       <ObjectionsSection />
       <div className="section-divider" />

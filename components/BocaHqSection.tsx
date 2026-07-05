@@ -93,7 +93,7 @@ export default function BocaHqSection({ onCta }: { onCta: () => void }) {
             </div>
 
             {/* Community channel link */}
-            {/* TODO[bgsc]: wire real community channel URL (Telegram / Passion broadcast / Discord) */}
+            {/* TODO[bgsc]: wire real community channel URL (Telegram / Discord) */}
             <a
               href="#"
               className="inline-flex items-center gap-2 mt-6 text-xs uppercase tracking-[0.3em] text-ash hover:text-soft-white transition-colors"

@@ -42,8 +42,8 @@ export async function POST(req: NextRequest) {
       ],
     });
 
-    // Log the new member in and send them into the in-app portal (onboarding),
-    // rather than bouncing them off-platform to the legacy Passion.io site.
+    // Log the new member in and send them straight into the in-app portal
+    // (onboarding) — the whole funnel now lives on-platform.
     const token = signMemberToken({
       userId: user.id,
       email: user.email,

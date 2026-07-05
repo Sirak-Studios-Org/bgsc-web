@@ -12,11 +12,6 @@ const prisma = new PrismaClient({ adapter });
 
 async function main() {
   await prisma.siteConfig.upsert({
-    where: { key: "passion_app_url" },
-    update: {},
-    create: { key: "passion_app_url", value: "http://Badgirlstrengthclub.passion.io" },
-  });
-  await prisma.siteConfig.upsert({
     where: { key: "trial_days" },
     update: {},
     create: { key: "trial_days", value: "7" },
