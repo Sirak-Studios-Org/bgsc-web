@@ -35,7 +35,7 @@ export async function POST(req: NextRequest) {
     const token = signMemberToken({ userId: user.id, email: user.email, name: user.name, plan: plan as "club" | "premium" | "vip" | "trial" | "free", planExpiry: new Date(periodEnd * 1000).toISOString(), onboardingComplete: !!onboarding });
 
     const res = NextResponse.json({ success: true });
-    res.cookies.set(MEMBER_COOKIE, token, { httpOnly: true, sameSite: "lax", path: "/", maxAge: 60 * 60 * 24 * 30 });
+    res.cookies.set(MEMBER_COOKIE, token, { httpOnly: true, secure: process.env.NODE_ENV === "production", sameSite: "lax", path: "/", maxAge: 60 * 60 * 24 * 30 });
     return res;
   } catch (err) {
     console.error("[portal/auth/register]", err);

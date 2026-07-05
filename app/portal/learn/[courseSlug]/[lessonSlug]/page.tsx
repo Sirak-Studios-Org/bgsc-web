@@ -3,6 +3,7 @@ import { prisma } from "@/lib/db";
 import { notFound, redirect } from "next/navigation";
 import Link from "next/link";
 import LessonPlayer from "@/components/portal/LessonPlayer";
+import { canAccess } from "@/lib/plans";
 
 export default async function LessonPage({ params }: { params: Promise<{ courseSlug: string; lessonSlug: string }> }) {
   const { courseSlug, lessonSlug } = await params;
@@ -18,6 +19,11 @@ export default async function LessonPage({ params }: { params: Promise<{ courseS
   });
   if (!lesson) notFound();
 
+  // Enforce plan gating server-side (direct-URL access must not bypass the lock).
+  if (!canAccess(session.plan, lesson.course.planRequired)) {
+    redirect(`/portal/learn?locked=${encodeURIComponent(courseSlug)}`);
+  }
+
   // Get current progress
   const progress = await prisma.lessonProgress.findUnique({
     where: { userId_lessonId: { userId: session.userId, lessonId: lesson.id } },
@@ -29,8 +35,8 @@ export default async function LessonPage({ params }: { params: Promise<{ courseS
     orderBy: { sortOrder: "asc" },
   });
 
-  // Get journal history for each textquestion widget
-  const widgetIds = lesson.widgets.filter(w => w.type === "textquestion").map(w => w.id);
+  // Get journal history for each question widget (DB uses "question"; legacy "textquestion")
+  const widgetIds = lesson.widgets.filter(w => w.type === "question" || w.type === "textquestion").map(w => w.id);
   const journalHistory = widgetIds.length > 0 ? await prisma.journalEntry.findMany({
     where: { userId: session.userId, widgetId: { in: widgetIds } },
     orderBy: { entryDate: "desc" },

@@ -37,16 +37,21 @@ export default function LessonPlayer({ lesson, widgets, isCompleted, nextLesson,
     <div className="space-y-6">
       {widgets.map(widget => {
         const content = (() => { try { return JSON.parse(widget.content); } catch { return {}; } })();
+        // Normalize widget types across seed sources: the DB holds "video"/"question"
+        // (Passion import) while older code used "clip"/"textquestion".
+        const type = widget.type;
 
-        if (widget.type === "clip") {
+        if (type === "video" || type === "clip") {
+          // DB stores the source as content.videoUrl; older widgets used videoKey.
+          const src = content.videoUrl ?? content.videoKey ?? "";
           return (
             <div key={widget.id}>
-              <VideoPlayer videoKey={content.videoKey ?? ""} chapters={content.chapters ?? []} onEnd={markComplete} />
+              <VideoPlayer videoKey={src} chapters={content.chapters ?? []} onEnd={markComplete} />
             </div>
           );
         }
 
-        if (widget.type === "text") {
+        if (type === "text") {
           return (
             <div key={widget.id} className="prose max-w-none text-sm leading-relaxed"
               style={{ color: "var(--soft-white)" }}
@@ -54,11 +59,11 @@ export default function LessonPlayer({ lesson, widgets, isCompleted, nextLesson,
           );
         }
 
-        if (widget.type === "timer") {
-          return <TimerWidget key={widget.id} seconds={content.seconds ?? 60} label={content.label ?? "Rest"} />;
+        if (type === "timer") {
+          return <TimerWidget key={widget.id} seconds={content.durationSeconds ?? content.seconds ?? 60} label={content.label ?? "Rest"} />;
         }
 
-        if (widget.type === "textquestion") {
+        if (type === "question" || type === "textquestion") {
           return (
             <ExerciseJournal
               key={widget.id}

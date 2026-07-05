@@ -1,6 +1,22 @@
 import { NextRequest, NextResponse } from "next/server";
 import { prisma } from "@/lib/db";
 import { getMemberSession } from "@/lib/auth";
+import { canAccess } from "@/lib/plans";
+import type { MemberPayload } from "@/lib/auth";
+
+// Verify the member's plan grants access to the channel's community.
+// Returns null when allowed, or a NextResponse error when not.
+async function gateChannel(channelId: number, session: MemberPayload): Promise<NextResponse | null> {
+  const channel = await prisma.channel.findUnique({
+    where: { id: channelId },
+    include: { community: { select: { planRequired: true } } },
+  });
+  if (!channel) return NextResponse.json({ error: "Channel not found." }, { status: 404 });
+  if (!canAccess(session.plan, channel.community.planRequired)) {
+    return NextResponse.json({ error: "Your plan doesn’t include this channel." }, { status: 403 });
+  }
+  return null;
+}
 
 type Ctx = { params: Promise<{ channelId: string }> };
 
@@ -11,6 +27,9 @@ export async function GET(req: NextRequest, { params }: Ctx) {
   const { channelId } = await params;
   const id = parseInt(channelId);
   if (isNaN(id)) return NextResponse.json({ error: "Invalid channel." }, { status: 400 });
+
+  const gate = await gateChannel(id, session);
+  if (gate) return gate;
 
   const { searchParams } = req.nextUrl;
   const limit = Math.min(parseInt(searchParams.get("limit") ?? "20"), 50);
@@ -71,6 +90,9 @@ export async function POST(req: NextRequest, { params }: Ctx) {
   const { channelId } = await params;
   const id = parseInt(channelId);
   if (isNaN(id)) return NextResponse.json({ error: "Invalid channel." }, { status: 400 });
+
+  const gate = await gateChannel(id, session);
+  if (gate) return gate;
 
   const body = await req.json();
   const content = (body.content ?? "").trim();

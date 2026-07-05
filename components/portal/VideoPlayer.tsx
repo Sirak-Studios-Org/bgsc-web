@@ -17,7 +17,10 @@ export default function VideoPlayer({ videoKey, chapters = [], onEnd }: Props) {
   const [speed, setSpeed] = useState(1);
   const [progress, setProgress] = useState(0);
   const [duration, setDuration] = useState(0);
+  const [errored, setErrored] = useState(false);
   const progressSavedRef = useRef(0);
+
+  const hasSource = Boolean(videoKey && videoKey.trim());
 
   const handleTimeUpdate = useCallback(() => {
     const v = videoRef.current;
@@ -42,7 +45,25 @@ export default function VideoPlayer({ videoKey, chapters = [], onEnd }: Props) {
     }
   }
 
-  const videoUrl = videoKey.startsWith("http") ? videoKey : publicUrl(videoKey);
+  const videoUrl = hasSource ? (videoKey.startsWith("http") ? videoKey : publicUrl(videoKey)) : "";
+
+  // Empty or failed source → show a clear placeholder instead of a dead black box.
+  if (!hasSource || errored) {
+    return (
+      <div className="relative flex flex-col items-center justify-center gap-2 text-center px-6"
+        style={{ background: "var(--surface-1)", border: "1px solid var(--border)", aspectRatio: "16/9" }}>
+        <span style={{ fontSize: 28 }}>🎬</span>
+        <p className="text-sm font-bold" style={{ color: "var(--soft-white)", fontFamily: "var(--font-display)" }}>
+          {hasSource ? "This video is being refreshed" : "Video coming soon"}
+        </p>
+        <p className="text-xs" style={{ color: "var(--ash)" }}>
+          {hasSource
+            ? "The clip couldn’t load right now. You can still mark the lesson complete below."
+            : "This lesson’s video hasn’t been uploaded yet."}
+        </p>
+      </div>
+    );
+  }
 
   return (
     <div>
@@ -56,6 +77,7 @@ export default function VideoPlayer({ videoKey, chapters = [], onEnd }: Props) {
           onTimeUpdate={handleTimeUpdate}
           onLoadedMetadata={e => setDuration((e.target as HTMLVideoElement).duration)}
           onEnded={onEnd}
+          onError={() => setErrored(true)}
           playsInline
         />
       </div>

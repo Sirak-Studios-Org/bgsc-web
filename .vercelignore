@@ -5,5 +5,6 @@
 android/
 ios/
 
-# Scripts
-scripts/
+# Scripts (but keep the build-time migration guard)
+scripts/*
+!scripts/migrate.mjs

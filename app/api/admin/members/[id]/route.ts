@@ -51,6 +51,12 @@ export async function DELETE(
   const { id } = await params;
   const memberId = parseInt(id, 10);
 
-  await prisma.user.delete({ where: { id: memberId } });
+  // Soft delete: a hard delete throws on the many Restrict-FK relations
+  // (subscription, posts, streaks, progress…) and destroys billing history.
+  // Deactivating blocks login and hides the member without data loss.
+  await prisma.user.update({
+    where: { id: memberId },
+    data: { isActive: false },
+  });
   return NextResponse.json({ success: true });
 }

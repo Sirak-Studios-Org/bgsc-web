@@ -13,7 +13,12 @@ const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const OUT_DIR = path.join(__dirname, "../public/images");
 fs.mkdirSync(OUT_DIR, { recursive: true });
 
-const FAL_KEY = "84886fe0-49ee-4246-bc5d-1c33059f7749:d96e9139bc3165da156729d3b493b7e8";
+// Provide via env, never commit a key: `FAL_KEY=... node scripts/generate-images.mjs`
+const FAL_KEY = process.env.FAL_KEY;
+if (!FAL_KEY) {
+  console.error("FAL_KEY env var is required (get one at https://fal.ai). Aborting.");
+  process.exit(1);
+}
 
 const BASE_STYLE =
   "cinematic editorial photography, high contrast, dramatic lighting, deep shadows, " +

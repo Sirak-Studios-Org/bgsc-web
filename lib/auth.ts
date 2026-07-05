@@ -1,7 +1,16 @@
 import jwt from "jsonwebtoken";
 import { cookies } from "next/headers";
 
-const SECRET = process.env.JWT_SECRET ?? "bgsc-dev-secret-change-in-production";
+// Fail closed: never fall back to a public/default secret. A missing JWT_SECRET
+// must break signing/verification loudly rather than silently allow token forgery.
+function getSecret(): string {
+  const s = process.env.JWT_SECRET;
+  if (!s || s.length < 16) {
+    throw new Error("JWT_SECRET is not set (or too short). Refusing to sign/verify tokens.");
+  }
+  return s;
+}
+
 const COOKIE = "bgsc_admin";
 
 export type AdminPayload = {
@@ -11,12 +20,12 @@ export type AdminPayload = {
 };
 
 export function signAdminToken(payload: AdminPayload): string {
-  return jwt.sign(payload, SECRET, { expiresIn: "7d" });
+  return jwt.sign(payload, getSecret(), { expiresIn: "7d" });
 }
 
 export function verifyAdminToken(token: string): AdminPayload | null {
   try {
-    return jwt.verify(token, SECRET) as AdminPayload;
+    return jwt.verify(token, getSecret()) as AdminPayload;
   } catch {
     return null;
   }
@@ -44,12 +53,12 @@ export type MemberPayload = {
 };
 
 export function signMemberToken(payload: MemberPayload): string {
-  return jwt.sign(payload, SECRET, { expiresIn: "30d" });
+  return jwt.sign(payload, getSecret(), { expiresIn: "30d" });
 }
 
 export function verifyMemberToken(token: string): MemberPayload | null {
   try {
-    return jwt.verify(token, SECRET) as MemberPayload;
+    return jwt.verify(token, getSecret()) as MemberPayload;
   } catch {
     return null;
   }

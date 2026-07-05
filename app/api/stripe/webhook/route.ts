@@ -87,7 +87,10 @@ export async function POST(req: NextRequest) {
       }
     }
   } catch (err) {
-    console.error("[stripe/webhook]", err);
+    // Return 500 so Stripe retries the event — otherwise a transient DB error
+    // during checkout.session.completed means a paid customer with no sub row.
+    console.error("[stripe/webhook]", event.type, err);
+    return NextResponse.json({ error: "Webhook handler failed" }, { status: 500 });
   }
 
   return NextResponse.json({ received: true });

@@ -45,7 +45,7 @@ export default function AdminDashboard() {
 
         {error && (
           <div className="mb-8 px-4 py-3 text-sm" style={{ background: "rgba(143,0,0,0.15)", color: "var(--crimson)", border: "1px solid var(--crimson)" }}>
-            Could not load analytics. Check your Turso DB connection.
+            Could not load analytics. Please refresh, or check the database connection.
           </div>
         )}
 

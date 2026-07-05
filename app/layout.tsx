@@ -27,14 +27,16 @@ export const viewport = {
   themeColor: "#8F0000",
 };
 
+const SITE_URL = (process.env.NEXT_PUBLIC_APP_URL ?? "https://bgsc-web.vercel.app").trim();
+
 export const metadata: Metadata = {
-  metadataBase: new URL("https://bgsc.vercel.app"),
+  metadataBase: new URL(SITE_URL),
   title: "Bad Girl Strength Club — You Were Never Meant to Stay Small",
   description: "Stop training to shrink. Start training to dominate. The strength program built for women who refuse to stay small.",
   openGraph: {
     title: "Bad Girl Strength Club",
     description: "You Were Never Meant to Stay Small. Join the standard.",
-    url: "https://bgsc.vercel.app",
+    url: SITE_URL,
     siteName: "Bad Girl Strength Club",
     locale: "en_US",
     type: "website",

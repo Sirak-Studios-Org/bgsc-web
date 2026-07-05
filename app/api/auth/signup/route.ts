@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import bcrypt from "bcryptjs";
 import { prisma, getConfig } from "@/lib/db";
+import { signMemberToken, MEMBER_COOKIE } from "@/lib/auth";
 
 export async function POST(req: NextRequest) {
   try {
@@ -41,10 +42,26 @@ export async function POST(req: NextRequest) {
       ],
     });
 
-    return NextResponse.json({
-      success: true,
-      redirect: config.passion_app_url ?? "http://Badgirlstrengthclub.passion.io",
+    // Log the new member in and send them into the in-app portal (onboarding),
+    // rather than bouncing them off-platform to the legacy Passion.io site.
+    const token = signMemberToken({
+      userId: user.id,
+      email: user.email,
+      name: user.name,
+      plan: "trial",
+      planExpiry: trialEnd.toISOString(),
+      onboardingComplete: false,
     });
+
+    const res = NextResponse.json({ success: true, redirect: "/portal/onboarding" });
+    res.cookies.set(MEMBER_COOKIE, token, {
+      httpOnly: true,
+      secure: process.env.NODE_ENV === "production",
+      sameSite: "lax",
+      path: "/",
+      maxAge: 60 * 60 * 24 * 30,
+    });
+    return res;
   } catch (err) {
     console.error("[signup]", err);
     return NextResponse.json({ error: "Something went wrong. Please try again." }, { status: 500 });

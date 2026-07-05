@@ -3,6 +3,7 @@ import { prisma } from "@/lib/db";
 import { notFound, redirect } from "next/navigation";
 import Link from "next/link";
 import { publicUrl } from "@/lib/r2";
+import { canAccess } from "@/lib/plans";
 import { CheckCircle, PlayCircle } from "lucide-react";
 
 export default async function CourseDetail({ params }: { params: Promise<{ courseSlug: string }> }) {
@@ -16,8 +17,14 @@ export default async function CourseDetail({ params }: { params: Promise<{ cours
   });
   if (!course) notFound();
 
+  // Enforce plan gating server-side.
+  if (!canAccess(session.plan, course.planRequired)) {
+    redirect(`/portal/learn?locked=${encodeURIComponent(courseSlug)}`);
+  }
+
+  const lessonIds = new Set(course.lessons.map(l => l.id));
   const progress = await prisma.lessonProgress.findMany({
-    where: { userId: session.userId },
+    where: { userId: session.userId, lessonId: { in: [...lessonIds] } },
     select: { lessonId: true, status: true },
   });
   const progressMap = new Map(progress.map(p => [p.lessonId, p.status]));
