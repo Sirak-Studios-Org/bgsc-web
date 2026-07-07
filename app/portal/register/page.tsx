@@ -1,10 +1,9 @@
 "use client";
 import { Suspense, useEffect, useState } from "react";
-import { useRouter, useSearchParams } from "next/navigation";
+import { useSearchParams } from "next/navigation";
 import Image from "next/image";
 
 function RegisterHandler() {
-  const router = useRouter();
   const params = useSearchParams();
   const [status, setStatus] = useState<"loading" | "error">("loading");
 
@@ -19,11 +18,13 @@ function RegisterHandler() {
     })
       .then(r => r.json())
       .then(data => {
-        if (data.success) router.push("/portal/onboarding");
+        // Hard navigation so onboarding loads with a clean Router Cache and the
+        // freshly-set session cookie (soft nav can replay a stale auth-redirect).
+        if (data.success) window.location.assign("/portal/onboarding");
         else setStatus("error");
       })
       .catch(() => setStatus("error"));
-  }, [params, router]);
+  }, [params]);
 
   return (
     <>

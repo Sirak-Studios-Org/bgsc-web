@@ -1,11 +1,10 @@
 "use client";
 import { Suspense, useState } from "react";
-import { useRouter, useSearchParams } from "next/navigation";
+import { useSearchParams } from "next/navigation";
 import Link from "next/link";
 import Image from "next/image";
 
 function LoginForm() {
-  const router = useRouter();
   const params = useSearchParams();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -24,8 +23,16 @@ function LoginForm() {
       });
       const data = await res.json();
       if (!res.ok) { setError(data.error ?? "Login failed"); return; }
-      const next = params.get("next") ?? "/portal";
-      router.push(data.onboardingComplete === false ? "/portal/onboarding" : next);
+      // Only allow same-site relative paths (block //evil.com and absolute URLs).
+      const raw = params.get("next") ?? "/portal";
+      const next = raw.startsWith("/") && !raw.startsWith("//") ? raw : "/portal";
+      const dest = data.onboardingComplete === false ? "/portal/onboarding" : next;
+      // Hard navigation (not router.push): a soft nav preserves Next's client
+      // Router Cache, which can hold a middleware auth-redirect fetched while
+      // logged out — replaying it would bounce every tab back to login. A full
+      // load wipes that cache so post-login navigation carries the session.
+      window.location.assign(dest);
+      return;
     } catch {
       setError("Network error. Please try again.");
     } finally {

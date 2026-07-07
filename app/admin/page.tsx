@@ -1,11 +1,9 @@
 "use client";
 
 import { useState } from "react";
-import { useRouter } from "next/navigation";
 import Image from "next/image";
 
 export default function AdminLogin() {
-  const router = useRouter();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
@@ -23,7 +21,11 @@ export default function AdminLogin() {
       });
       const data = await res.json();
       if (!res.ok) { setError(data.error); return; }
-      router.push("/admin/dashboard");
+      // Hard navigation (not router.push): a soft nav preserves Next's client
+      // Router Cache, which can hold a middleware auth-redirect fetched while
+      // logged out; a full load wipes it so the new session is honored.
+      window.location.assign("/admin/dashboard");
+      return;
     } catch {
       setError("Connection error. Try again.");
     } finally {
