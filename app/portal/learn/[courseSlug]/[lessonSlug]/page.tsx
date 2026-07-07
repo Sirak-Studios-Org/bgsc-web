@@ -4,24 +4,33 @@ import { notFound, redirect } from "next/navigation";
 import Link from "next/link";
 import LessonPlayer from "@/components/portal/LessonPlayer";
 import { canAccess } from "@/lib/plans";
+import { isDripLocked } from "@/lib/drip";
 
 export default async function LessonPage({ params }: { params: Promise<{ courseSlug: string; lessonSlug: string }> }) {
   const { courseSlug, lessonSlug } = await params;
   const session = await getMemberSession();
   if (!session) redirect("/portal/login");
 
-  const lesson = await prisma.lesson.findFirst({
-    where: { slug: lessonSlug, isPublished: true, course: { slug: courseSlug } },
-    include: {
-      course: true,
-      widgets: { orderBy: { sortOrder: "asc" } },
-    },
-  });
+  const [lesson, user] = await Promise.all([
+    prisma.lesson.findFirst({
+      where: { slug: lessonSlug, isPublished: true, course: { slug: courseSlug } },
+      include: {
+        course: true,
+        widgets: { orderBy: { sortOrder: "asc" } },
+      },
+    }),
+    prisma.user.findUnique({ where: { id: session.userId }, select: { trialStart: true } }),
+  ]);
   if (!lesson) notFound();
 
   // Enforce plan gating server-side (direct-URL access must not bypass the lock).
   if (!canAccess(session.plan, lesson.course.planRequired)) {
     redirect(`/portal/learn?locked=${encodeURIComponent(courseSlug)}`);
+  }
+
+  // Enforce drip schedule server-side too.
+  if (isDripLocked(user?.trialStart ?? new Date(0), lesson.dripDays)) {
+    redirect(`/portal/learn/${courseSlug}`);
   }
 
   // Get current progress

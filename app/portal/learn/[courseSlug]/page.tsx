@@ -4,18 +4,23 @@ import { notFound, redirect } from "next/navigation";
 import Link from "next/link";
 import { publicUrl } from "@/lib/r2";
 import { canAccess } from "@/lib/plans";
-import { CheckCircle, PlayCircle } from "lucide-react";
+import { isDripLocked, daysUntilUnlock } from "@/lib/drip";
+import { CheckCircle, PlayCircle, Lock } from "lucide-react";
 
 export default async function CourseDetail({ params }: { params: Promise<{ courseSlug: string }> }) {
   const { courseSlug } = await params;
   const session = await getMemberSession();
   if (!session) redirect("/portal/login");
 
-  const course = await prisma.course.findUnique({
-    where: { slug: courseSlug, isPublished: true },
-    include: { lessons: { where: { isPublished: true }, orderBy: { sortOrder: "asc" } } },
-  });
+  const [course, user] = await Promise.all([
+    prisma.course.findUnique({
+      where: { slug: courseSlug, isPublished: true },
+      include: { lessons: { where: { isPublished: true }, orderBy: { sortOrder: "asc" } } },
+    }),
+    prisma.user.findUnique({ where: { id: session.userId }, select: { trialStart: true } }),
+  ]);
   if (!course) notFound();
+  const joinedAt = user?.trialStart ?? new Date(0);
 
   // Enforce plan gating server-side.
   if (!canAccess(session.plan, course.planRequired)) {
@@ -74,13 +79,20 @@ export default async function CourseDetail({ params }: { params: Promise<{ cours
         {course.lessons.map((lesson, idx) => {
           const status = progressMap.get(lesson.id) ?? "not_started";
           const isCompleted = status === "completed";
-          return (
-            <Link key={lesson.id}
-              href={`/portal/learn/${courseSlug}/${lesson.slug}`}
-              className="flex items-center gap-4 p-4 transition-colors hover:opacity-80"
-              style={{ background: "var(--surface-1)", border: `1px solid ${isCompleted ? "rgba(143,0,0,0.3)" : "var(--border)"}` }}>
+          const dripped = isDripLocked(joinedAt, lesson.dripDays);
+
+          const inner = (
+            <>
+              {lesson.coverImageKey && (
+                // eslint-disable-next-line @next/next/no-img-element
+                <img src={publicUrl(lesson.coverImageKey)} alt=""
+                  className="w-14 h-14 object-cover shrink-0"
+                  style={{ opacity: dripped ? 0.4 : 1 }} />
+              )}
               <div className="shrink-0">
-                {isCompleted ? (
+                {dripped ? (
+                  <Lock size={20} style={{ color: "rgba(255,255,255,0.25)" }} />
+                ) : isCompleted ? (
                   <CheckCircle size={20} style={{ color: "var(--crimson)" }} />
                 ) : (
                   <PlayCircle size={20} style={{ color: "rgba(255,255,255,0.3)" }} />
@@ -88,15 +100,33 @@ export default async function CourseDetail({ params }: { params: Promise<{ cours
               </div>
               <div className="flex-1 min-w-0">
                 <p className="text-sm font-medium truncate"
-                  style={{ color: isCompleted ? "var(--ash)" : "var(--soft-white)", fontFamily: "var(--font-display)" }}>
+                  style={{ color: dripped ? "rgba(255,255,255,0.35)" : isCompleted ? "var(--ash)" : "var(--soft-white)", fontFamily: "var(--font-display)" }}>
                   {idx + 1}. {lesson.title}
                 </p>
-                {lesson.durationMinutes > 0 && (
-                  <p className="text-xs mt-0.5" style={{ color: "rgba(255,255,255,0.3)" }}>
-                    {lesson.durationMinutes} min
-                  </p>
-                )}
+                <p className="text-xs mt-0.5" style={{ color: "rgba(255,255,255,0.3)" }}>
+                  {dripped
+                    ? `Unlocks in ${daysUntilUnlock(joinedAt, lesson.dripDays)} day${daysUntilUnlock(joinedAt, lesson.dripDays) === 1 ? "" : "s"}`
+                    : lesson.durationMinutes > 0 ? `${lesson.durationMinutes} min` : null}
+                </p>
               </div>
+            </>
+          );
+
+          if (dripped) {
+            return (
+              <div key={lesson.id} className="flex items-center gap-4 p-4 cursor-not-allowed"
+                style={{ background: "var(--surface-1)", border: "1px solid var(--border)", opacity: 0.75 }}>
+                {inner}
+              </div>
+            );
+          }
+
+          return (
+            <Link key={lesson.id}
+              href={`/portal/learn/${courseSlug}/${lesson.slug}`}
+              className="flex items-center gap-4 p-4 transition-colors hover:opacity-80"
+              style={{ background: "var(--surface-1)", border: `1px solid ${isCompleted ? "rgba(143,0,0,0.3)" : "var(--border)"}` }}>
+              {inner}
             </Link>
           );
         })}

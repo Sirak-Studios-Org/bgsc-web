@@ -46,7 +46,18 @@ export default function LessonPlayer({ lesson, widgets, isCompleted, nextLesson,
           const src = content.videoUrl ?? content.videoKey ?? "";
           return (
             <div key={widget.id}>
-              <VideoPlayer videoKey={src} chapters={content.chapters ?? []} onEnd={markComplete} />
+              <VideoPlayer
+                videoKey={src}
+                chapters={content.chapters ?? []}
+                onEnd={markComplete}
+                onProgress={(pct) => {
+                  fetch(`/api/portal/lessons/${lesson.id}/progress`, {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify({ watchPercent: pct }),
+                  }).catch(() => {});
+                }}
+              />
             </div>
           );
         }

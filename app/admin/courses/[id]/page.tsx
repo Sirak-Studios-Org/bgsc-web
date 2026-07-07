@@ -3,6 +3,7 @@
 import { useEffect, useState, use } from "react";
 import { useRouter } from "next/navigation";
 import AdminShell from "@/components/admin/AdminShell";
+import MediaUploader from "@/components/admin/MediaUploader";
 
 const PLAN_OPTIONS = ["club", "premium", "vip"];
 
@@ -23,6 +24,7 @@ type Course = {
   description: string;
   planRequired: string[];
   isPublished: boolean;
+  coverImageKey: string | null;
   lessons: Lesson[];
 };
 
@@ -71,6 +73,18 @@ export default function CourseEditorPage({ params }: { params: Promise<{ id: str
       setTimeout(() => setSaveMsg(""), 2000);
     }
     setSaving(false);
+  }
+
+  async function saveCoverImage(key: string) {
+    if (!course) return;
+    const res = await fetch(`/api/admin/courses/${course.id}`, {
+      method: "PATCH",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ coverImageKey: key }),
+    });
+    if (res.ok) {
+      setCourse((prev) => (prev ? { ...prev, coverImageKey: key } : prev));
+    }
   }
 
   async function toggleLessonPublish(lesson: Lesson) {
@@ -222,6 +236,12 @@ export default function CourseEditorPage({ params }: { params: Promise<{ id: str
                 style={{ borderColor: "var(--border)", color: "#fff", fontFamily: "var(--font-body)", background: "var(--surface-2)" }}
               />
             </div>
+            <MediaUploader
+              kind="image"
+              label="Cover image"
+              value={course?.coverImageKey ?? null}
+              onChange={saveCoverImage}
+            />
             <div>
               <label className="block text-xs uppercase tracking-widest mb-2"
                 style={{ color: "rgba(255,255,255,0.35)", fontFamily: "var(--font-display)" }}>
@@ -300,15 +320,19 @@ export default function CourseEditorPage({ params }: { params: Promise<{ id: str
                       className="text-[10px] px-1 disabled:opacity-20 hover:opacity-60 transition-opacity"
                       style={{ color: "var(--ash)" }}>▼</button>
                   </div>
-                  <div className="flex-1 min-w-0">
-                    <p className="text-sm" style={{ color: "var(--soft-white)", fontFamily: "var(--font-body)" }}>
+                  <button
+                    onClick={() => router.push(`/admin/courses/${course?.id}/lessons/${lesson.id}`)}
+                    className="flex-1 min-w-0 text-left hover:opacity-80 transition-opacity"
+                  >
+                    <p className="text-sm underline decoration-dotted underline-offset-4"
+                      style={{ color: "var(--soft-white)", fontFamily: "var(--font-body)" }}>
                       {lesson.title}
                     </p>
                     <p className="text-[10px] uppercase tracking-wide mt-0.5"
                       style={{ color: "rgba(255,255,255,0.3)", fontFamily: "var(--font-display)" }}>
-                      {lesson.lessonType} · {lesson.durationMinutes > 0 ? `${lesson.durationMinutes}min` : "no duration"}
+                      {lesson.lessonType} · {lesson.durationMinutes > 0 ? `${lesson.durationMinutes}min` : "no duration"} · edit content →
                     </p>
-                  </div>
+                  </button>
                   <button
                     onClick={() => toggleLessonPublish(lesson)}
                     className="text-[10px] uppercase tracking-widest px-2 py-1 transition-opacity hover:opacity-80"

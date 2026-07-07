@@ -42,6 +42,7 @@ export async function PATCH(req: NextRequest, { params }: Ctx) {
   if (body.sortOrder !== undefined) data.sortOrder = body.sortOrder;
   if (body.planRequired !== undefined)
     data.planRequired = JSON.stringify(body.planRequired);
+  if (body.coverImageKey !== undefined) data.coverImageKey = body.coverImageKey;
 
   const course = await prisma.course.update({ where: { id: courseId }, data });
   return NextResponse.json({ course });

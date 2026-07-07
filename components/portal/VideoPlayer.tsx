@@ -1,6 +1,6 @@
 "use client";
 import { useRef, useState, useCallback } from "react";
-import { publicUrl } from "@/lib/r2";
+import { publicUrl } from "@/lib/r2-public";
 
 interface Chapter { time: number; label: string }
 
@@ -8,11 +8,12 @@ interface Props {
   videoKey: string;
   chapters?: Chapter[];
   onEnd?: () => void;
+  onProgress?: (pct: number) => void;
 }
 
 const SPEEDS = [0.75, 1, 1.25, 1.5, 2];
 
-export default function VideoPlayer({ videoKey, chapters = [], onEnd }: Props) {
+export default function VideoPlayer({ videoKey, chapters = [], onEnd, onProgress }: Props) {
   const videoRef = useRef<HTMLVideoElement>(null);
   const [speed, setSpeed] = useState(1);
   const [progress, setProgress] = useState(0);
@@ -27,11 +28,12 @@ export default function VideoPlayer({ videoKey, chapters = [], onEnd }: Props) {
     if (!v || !v.duration) return;
     const pct = Math.floor((v.currentTime / v.duration) * 100);
     setProgress(pct);
-    // Save progress every 10% milestone
-    if (pct > progressSavedRef.current + 10) {
+    // Report progress every 10% milestone (throttles DB writes to ≤10/lesson)
+    if (pct >= progressSavedRef.current + 10) {
       progressSavedRef.current = pct;
+      onProgress?.(pct);
     }
-  }, []);
+  }, [onProgress]);
 
   function setPlaybackSpeed(s: number) {
     setSpeed(s);

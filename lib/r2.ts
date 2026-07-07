@@ -22,6 +22,11 @@ export async function signedReadUrl(key: string, expiresIn = 900): Promise<strin
   return getSignedUrl(r2, cmd, { expiresIn });
 }
 
+export async function signedUploadUrl(key: string, contentType: string, expiresIn = 600): Promise<string> {
+  const cmd = new PutObjectCommand({ Bucket: BUCKET, Key: key, ContentType: contentType });
+  return getSignedUrl(r2, cmd, { expiresIn });
+}
+
 export async function uploadFile(key: string, body: Buffer, contentType: string): Promise<void> {
   await r2.send(new PutObjectCommand({ Bucket: BUCKET, Key: key, Body: body, ContentType: contentType }));
 }
