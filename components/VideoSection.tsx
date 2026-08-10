@@ -100,12 +100,16 @@ export default function VideoSection() {
 
               <div className="video-container relative z-10 overflow-hidden bg-[#0e0e0e]">
                 {VIDEO_EMBED_URL ? (
-                  <iframe
-                    src={VIDEO_EMBED_URL}
-                    title="Bad Girl Strength Club — VSL"
-                    allow="autoplay; fullscreen; picture-in-picture"
-                    allowFullScreen
-                  />
+                 <video
+  src={VIDEO_EMBED_URL}
+  title="Bad Girl Strength Club — VSL"
+  controls
+  playsInline
+  preload="metadata"
+  className="w-full h-auto"
+>
+  Your browser does not support HTML5 video.
+</video>
                 ) : (
                   <div className="absolute inset-0 flex flex-col items-center justify-center gap-6"
                     style={{ background: "#0e0e0e" }}>
