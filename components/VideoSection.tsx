@@ -67,7 +67,7 @@ export default function VideoSection() {
         viewport={{ once: true }}
         transition={{ duration: 0.6 }}
       >
-        BEFORE YOU SCROLL!
+     
       </motion.div>
 
       <div className="max-w-5xl mx-auto px-6 pt-10">
