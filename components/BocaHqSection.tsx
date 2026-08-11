@@ -6,9 +6,9 @@ import { Display } from "./ui";
 
 // TODO[bgsc]: swap placeholder community shots for actual Boca HQ exterior + training-floor photos when assets land
 const HQ_IMAGES = [
-  { src: "/images/community-1.jpg", alt: "Boca Raton HQ training floor" },
-  { src: "/images/community-3.jpg", alt: "Coached repetition at HQ" },
-  { src: "/images/community-4.jpg", alt: "Boca HQ rack lineup" },
+  { src: "/images/lift-heavy.jpg", alt: "Boca Raton HQ training floor" },
+  { src: "/images/community-2.jpg", alt: "Coached repetition at HQ" },
+  { src: "/images/community-3.jpg", alt: "Boca HQ rack lineup" },
 ];
 
 export default function BocaHqSection({ onCta }: { onCta: () => void }) {
