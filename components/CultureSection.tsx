@@ -63,7 +63,7 @@ export default function CultureSection() {
                 clip: "polygon(0 0, 85% 0, 100% 15%, 100% 100%, 0 100%)",
               },
               {
-                src: "/images/community-4.jpg",
+                src: "/images/community-5.png",
                 alt: "Rest between sets",
                 clip: "polygon(15% 0, 100% 0, 100% 100%, 0 100%, 0% 15%)",
               },
@@ -113,7 +113,7 @@ export default function CultureSection() {
                 className="object-cover select-none pointer-events-none border border-border brightness-80" />
             </div>
             <div className="col-span-2 relative" style={{ height: 200 }}>
-              <Image src="/images/community-4.jpg" alt="The barbell" fill
+              <Image src="/images/community-5.png" alt="The barbell" fill
                 sizes="(max-width: 768px) 100vw, 66vw"
                 className="object-cover object-top select-none pointer-events-none border border-border brightness-80" />
             </div>

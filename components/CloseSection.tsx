@@ -81,7 +81,7 @@ export default function CloseSection({ onCta }: { onCta: () => void }) {
             transition={{ duration: 0.7, delay: 0.15 }}
           >
             <Image
-              src="/images/close-triumph.jpg"
+              src="/images/close-triumph.png"
               alt="Step into the new standard"
               fill
               sizes="(max-width: 1024px) 100vw, 50vw"

@@ -2,87 +2,45 @@
 
 import { useState } from "react";
 import { motion } from "framer-motion";
-import Link from "next/link";
 import { Display } from "./ui";
 
-type Billing = "monthly" | "annual";
-
-type TierSlug = "independent" | "supported" | "immersed";
-
-type Tier = {
-  slug: TierSlug;
-  name: string;
-  positioning: string;
-  problem: string;
-  outcome: string;
-  inclusions: string[];
-  // TODO[bgsc]: replace placeholder pricing once tier pricing is finalized
-  monthly: string | null;
-  annualPerMonth: string | null;
-  annualTotal: string | null;
-  applyOnly?: boolean;
-  cta: string;
-  highlighted?: boolean;
-};
-
-const TIERS: Tier[] = [
-  {
-    slug: "independent",
-    name: "Independent",
-    positioning: "You don't need more time. You need the right system.",
-    problem: "Solves the time problem.",
-    outcome: "Flexible, on-demand training built around the standard. You move when you can — the structure stays the same.",
-    inclusions: [
-      "Full video training library",
-      "Self-paced programming",
-      "Private community access",
-    ],
-    monthly: "$49",
-    annualPerMonth: "$39",
-    annualTotal: "$468 billed yearly",
-    cta: "Start Independent",
-  },
-  {
-    slug: "supported",
-    name: "Supported",
-    positioning: "You don't need more motivation. You need accountability.",
-    problem: "Solves the consistency problem.",
-    outcome: "Live remote classes, weekly check-ins, macro guidance — the structure plus a coach holding the line with you.",
-    inclusions: [
-      "Everything in Independent",
-      "Live remote training sessions",
-      "Macro guidance + weekly check-ins",
-    ],
-    monthly: "$199",
-    annualPerMonth: "$159",
-    annualTotal: "$1,908 billed yearly",
-    cta: "Choose Supported",
-    highlighted: true,
-  },
-  {
-    slug: "immersed",
-    name: "Immersed",
-    positioning: "You don't need more information. You need guidance.",
-    problem: "Solves the certainty problem.",
-    outcome: "In-person coaching at the Boca Raton HQ. The full standard, taught and held by Steph and the BGSC team.",
-    inclusions: [
-      "Everything in Supported",
-      "In-person coaching at Boca HQ",
-      "Premium accountability + member rhythm",
-    ],
-    monthly: null,
-    annualPerMonth: null,
-    annualTotal: null,
-    applyOnly: true,
-    cta: "Apply for Immersed",
-  },
-];
+/*
+ * TEMPORARY DUMMY LINKS
+ *
+ * Replace these later with Steph's real URLs.
+ */
+const CALENDLY_URL = "https://example.com/steph-calendly";
+const FITBUDD_URL = "https://example.com/steph-fitbudd";
 
 export default function TierSection() {
-  const [billing, setBilling] = useState<Billing>("monthly");
+  const [name, setName] = useState("");
+  const [email, setEmail] = useState("");
+  const [submitted, setSubmitted] = useState(false);
+
+  function handleJoinSubmit(e: React.FormEvent<HTMLFormElement>) {
+    e.preventDefault();
+
+    /*
+     * TEMPORARY:
+     * This currently only shows a success state.
+     *
+     * Later, connect this form to the real lead/application
+     * endpoint so Steph receives the name + email.
+     */
+    console.log("BGSC Join the Club lead:", {
+      name,
+      email,
+    });
+
+    setSubmitted(true);
+  }
 
   return (
-    <section id="tiers" className="py-24 px-6" style={{ background: "var(--surface-1)" }}>
+    <section
+      id="tiers"
+      className="py-24 px-6"
+      style={{ background: "var(--surface-1)" }}
+    >
       <div className="max-w-6xl mx-auto">
 
         {/* Heading */}
@@ -95,165 +53,253 @@ export default function TierSection() {
         >
           <Display className="text-3xl sm:text-4xl md:text-5xl mb-6 leading-[1.05]">
             Choose Your{" "}
-            <span style={{ color: "var(--crimson)" }}>Immersion Level.</span>
+            <span style={{ color: "var(--crimson)" }}>
+              Next Step.
+            </span>
           </Display>
+
           <p
             className="text-base md:text-lg leading-relaxed"
-            style={{ color: "var(--ash)", fontFamily: "var(--font-body, 'Inter', sans-serif)" }}
+            style={{
+              color: "var(--ash)",
+              fontFamily: "var(--font-body, 'Inter', sans-serif)",
+            }}
           >
-            Three ways into The New Standard. Each one solves a different problem. Pick the level of support that matches where you are.
+            Three ways to step into the BGSC standard. Start where you are,
+            talk to Steph, or enroll when you&apos;re ready.
           </p>
         </motion.div>
 
-        {/* Billing toggle */}
-        <motion.div
-          className="flex justify-center mb-12"
-          initial={{ opacity: 0, y: 10 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true }}
-          transition={{ duration: 0.5 }}
-        >
-          <div className="flex flex-col items-center gap-3">
-            <div
-              className="relative grid grid-cols-2 border border-border bg-near-black p-1 w-[280px] md:w-[320px]"
-              role="tablist"
-              aria-label="Billing period"
-            >
-              {/* Sliding pill */}
-              <motion.div
-                aria-hidden
-                className="absolute top-1 bottom-1 left-1 w-[calc(50%-0.25rem)] bg-soft-white"
-                animate={{ x: billing === "monthly" ? 0 : "100%" }}
-                transition={{ type: "spring", stiffness: 400, damping: 32 }}
-                style={{ borderRadius: "2px" }}
-              />
-
-              <button
-                role="tab"
-                aria-selected={billing === "monthly"}
-                onClick={() => setBilling("monthly")}
-                className={`relative z-10 py-2.5 text-[10px] md:text-xs font-bold uppercase tracking-[0.25em] transition-colors duration-300 cursor-pointer text-center ${
-                  billing === "monthly" ? "text-near-black" : "text-soft-white/60 hover:text-soft-white"
-                }`}
-              >
-                Monthly
-              </button>
-              <button
-                role="tab"
-                aria-selected={billing === "annual"}
-                onClick={() => setBilling("annual")}
-                className={`relative z-10 py-2.5 text-[10px] md:text-xs font-bold uppercase tracking-[0.25em] transition-colors duration-300 cursor-pointer text-center ${
-                  billing === "annual" ? "text-near-black" : "text-soft-white/60 hover:text-soft-white"
-                }`}
-              >
-                Annual
-              </button>
-            </div>
-            <p className="text-[10px] font-bold uppercase tracking-[0.3em] text-crimson">
-              Save 20% with annual
-            </p>
-          </div>
-        </motion.div>
-
-        {/* Tier cards */}
+        {/* Three action cards */}
         <div className="grid lg:grid-cols-3 gap-6">
-          {TIERS.map((tier, i) => (
-            <motion.div
-              key={tier.name}
-              initial={{ opacity: 0, y: 24 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true }}
-              transition={{ duration: 0.5, delay: i * 0.1 }}
-              className={`relative flex flex-col border bg-near-black p-8 ${tier.highlighted ? "border-crimson lg:scale-[1.02]" : "border-border"}`}
+
+          {/* ========================================================= */}
+          {/* 1. JOIN THE CLUB */}
+          {/* ========================================================= */}
+
+          <motion.div
+            initial={{ opacity: 0, y: 24 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.5 }}
+            className="relative flex flex-col border border-border bg-near-black p-8"
+          >
+            <p
+              className="text-xs font-bold uppercase tracking-[0.35em] mb-3"
+              style={{
+                color: "var(--crimson)",
+                fontFamily:
+                  "var(--font-display, 'Poppins', sans-serif)",
+              }}
             >
-              {tier.highlighted && (
-                <p className="absolute top-0 left-0 right-0 -translate-y-1/2 mx-auto w-fit px-4 py-1 bg-crimson text-soft-white text-[10px] font-bold uppercase tracking-[0.3em]">
-                  Most Chosen
+              Stay Connected
+            </p>
+
+            <h3
+              className="text-3xl md:text-4xl font-black uppercase tracking-tight text-soft-white mb-4"
+              style={{
+                fontFamily:
+                  "var(--font-display, 'Poppins', sans-serif)",
+              }}
+            >
+              Join the Club
+            </h3>
+
+            <p className="text-sm md:text-base font-bold text-soft-white leading-snug mb-4">
+              Get closer to the BGSC standard.
+            </p>
+
+            <p className="text-sm text-ash leading-relaxed mb-8">
+              Leave your details and Steph&apos;s team can follow up with you
+              directly.
+            </p>
+
+            {submitted ? (
+              <div className="mt-auto border border-crimson/50 p-6">
+                <p
+                  className="text-sm uppercase tracking-[0.2em] font-bold text-soft-white"
+                  style={{
+                    fontFamily:
+                      "var(--font-display, 'Poppins', sans-serif)",
+                  }}
+                >
+                  You&apos;re In.
                 </p>
-              )}
 
-              {/* Name */}
-              <p
-                className="text-xs font-bold uppercase tracking-[0.35em] mb-3"
-                style={{ color: "var(--crimson)", fontFamily: "var(--font-display, 'Poppins', sans-serif)" }}
+                <p className="text-sm text-ash mt-3 leading-relaxed">
+                  Thanks for joining. Steph&apos;s team will be in touch.
+                </p>
+              </div>
+            ) : (
+              <form
+                onSubmit={handleJoinSubmit}
+                className="mt-auto space-y-4"
               >
-                {tier.problem}
-              </p>
-              <h3
-                className="text-3xl md:text-4xl font-black uppercase tracking-tight text-soft-white mb-4"
-                style={{ fontFamily: "var(--font-display, 'Poppins', sans-serif)" }}
-              >
-                {tier.name}
-              </h3>
+                <div>
+                  <label
+                    htmlFor="bgsc-name"
+                    className="block text-[10px] uppercase tracking-[0.25em] font-bold text-ash mb-2"
+                  >
+                    Name
+                  </label>
 
-              {/* Positioning */}
-              <p className="text-sm md:text-base font-bold text-soft-white leading-snug mb-4">
-                {tier.positioning}
-              </p>
+                  <input
+                    id="bgsc-name"
+                    type="text"
+                    required
+                    value={name}
+                    onChange={(e) => setName(e.target.value)}
+                    placeholder="Your name"
+                    className="w-full h-[50px] px-4 bg-transparent border border-border text-soft-white placeholder:text-ash/50 outline-none focus:border-crimson transition-colors"
+                  />
+                </div>
 
-              {/* Outcome */}
-              <p className="text-sm text-ash leading-relaxed mb-6">
-                {tier.outcome}
-              </p>
+                <div>
+                  <label
+                    htmlFor="bgsc-email"
+                    className="block text-[10px] uppercase tracking-[0.25em] font-bold text-ash mb-2"
+                  >
+                    Email
+                  </label>
 
-              {/* Inclusions */}
-              <ul className="space-y-2 mb-8">
-                {tier.inclusions.map((line) => (
-                  <li key={line} className="flex items-start gap-3">
-                    <span className="shrink-0 mt-0.5 w-4 h-4 flex items-center justify-center border border-border text-[10px] font-bold text-crimson">
-                      ✓
-                    </span>
-                    <span className="text-xs text-soft-white/85 leading-relaxed">{line}</span>
-                  </li>
-                ))}
-              </ul>
+                  <input
+                    id="bgsc-email"
+                    type="email"
+                    required
+                    value={email}
+                    onChange={(e) => setEmail(e.target.value)}
+                    placeholder="you@example.com"
+                    className="w-full h-[50px] px-4 bg-transparent border border-border text-soft-white placeholder:text-ash/50 outline-none focus:border-crimson transition-colors"
+                  />
+                </div>
 
-              {/* Price */}
-              <div className="mt-auto pt-6 border-t border-border">
-                {tier.applyOnly ? (
-                  <div className="mb-6">
-                    <p
-                      className="text-4xl md:text-5xl font-black text-soft-white leading-none mb-2"
-                      style={{ fontFamily: "var(--font-display, 'Poppins', sans-serif)" }}
-                    >
-                      Apply
-                    </p>
-                    <p className="text-xs text-ash leading-relaxed">
-                      By application — pricing shared after review.
-                    </p>
-                  </div>
-                ) : (
-                  <div className="mb-6">
-                    <p
-                      className="text-4xl md:text-5xl font-black text-soft-white leading-none mb-2"
-                      style={{ fontFamily: "var(--font-display, 'Poppins', sans-serif)" }}
-                    >
-                      {billing === "monthly" ? tier.monthly : tier.annualPerMonth}
-                      <span className="text-base font-normal text-ash ml-1">/mo</span>
-                    </p>
-                    <p className="text-[11px] text-ash leading-relaxed">
-                      {billing === "monthly" ? "Billed monthly" : tier.annualTotal}
-                    </p>
-                  </div>
-                )}
-
-                <Link
-                  href={`/step-in?tier=${tier.slug}`}
-                  className={`w-full h-[52px] flex items-center justify-center uppercase font-bold text-[11px] md:text-xs tracking-[0.25em] transition-all duration-300 cursor-pointer ${
-                    tier.highlighted
-                      ? "bg-crimson text-soft-white hover:bg-crimson/85"
-                      : "bg-soft-white text-near-black hover:bg-ash"
-                  }`}
+                <button
+                  type="submit"
+                  className="w-full h-[52px] flex items-center justify-center uppercase font-bold text-[11px] md:text-xs tracking-[0.25em] bg-soft-white text-near-black hover:bg-ash transition-all duration-300 cursor-pointer"
                   style={{ borderRadius: "2px" }}
                 >
-                  {tier.cta}
-                </Link>
-              </div>
-            </motion.div>
-          ))}
+                  Join the Club
+                </button>
+              </form>
+            )}
+          </motion.div>
+
+          {/* ========================================================= */}
+          {/* 2. TALK TO STEPH */}
+          {/* ========================================================= */}
+
+          <motion.div
+            initial={{ opacity: 0, y: 24 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.5, delay: 0.1 }}
+            className="relative flex flex-col border border-crimson lg:scale-[1.02] bg-near-black p-8"
+          >
+            {/* Highlight */}
+            <p className="absolute top-0 left-0 right-0 -translate-y-1/2 mx-auto w-fit px-4 py-1 bg-crimson text-soft-white text-[10px] font-bold uppercase tracking-[0.3em]">
+              Before You Enroll
+            </p>
+
+            <p
+              className="text-xs font-bold uppercase tracking-[0.35em] mb-3"
+              style={{
+                color: "var(--crimson)",
+                fontFamily:
+                  "var(--font-display, 'Poppins', sans-serif)",
+              }}
+            >
+              Have Questions?
+            </p>
+
+            <h3
+              className="text-3xl md:text-4xl font-black uppercase tracking-tight text-soft-white mb-4"
+              style={{
+                fontFamily:
+                  "var(--font-display, 'Poppins', sans-serif)",
+              }}
+            >
+              Talk to Steph
+            </h3>
+
+            <p className="text-sm md:text-base font-bold text-soft-white leading-snug mb-4">
+              Know if BGSC is right for you.
+            </p>
+
+            <p className="text-sm text-ash leading-relaxed mb-8">
+              Book a pre-enrollment call with Steph. Get your questions
+              answered and figure out the right next step.
+            </p>
+
+            <div className="mt-auto">
+              <a
+                href={CALENDLY_URL}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="w-full h-[52px] flex items-center justify-center uppercase font-bold text-[11px] md:text-xs tracking-[0.25em] bg-crimson text-soft-white hover:bg-crimson/85 transition-all duration-300"
+                style={{ borderRadius: "2px" }}
+              >
+                Book a Call
+              </a>
+            </div>
+          </motion.div>
+
+          {/* ========================================================= */}
+          {/* 3. ENROLL NOW */}
+          {/* ========================================================= */}
+
+          <motion.div
+            initial={{ opacity: 0, y: 24 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.5, delay: 0.2 }}
+            className="relative flex flex-col border border-border bg-near-black p-8"
+          >
+            <p
+              className="text-xs font-bold uppercase tracking-[0.35em] mb-3"
+              style={{
+                color: "var(--crimson)",
+                fontFamily:
+                  "var(--font-display, 'Poppins', sans-serif)",
+              }}
+            >
+              Ready?
+            </p>
+
+            <h3
+              className="text-3xl md:text-4xl font-black uppercase tracking-tight text-soft-white mb-4"
+              style={{
+                fontFamily:
+                  "var(--font-display, 'Poppins', sans-serif)",
+              }}
+            >
+              Enroll Now
+            </h3>
+
+            <p className="text-sm md:text-base font-bold text-soft-white leading-snug mb-4">
+              Step into the standard.
+            </p>
+
+            <p className="text-sm text-ash leading-relaxed mb-8">
+              Ready to get started? Continue your enrollment through the BGSC
+              FitBudd platform.
+            </p>
+
+            <div className="mt-auto">
+              <a
+                href={FITBUDD_URL}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="w-full h-[52px] flex items-center justify-center uppercase font-bold text-[11px] md:text-xs tracking-[0.25em] bg-soft-white text-near-black hover:bg-ash transition-all duration-300"
+                style={{ borderRadius: "2px" }}
+              >
+                Enroll Now
+              </a>
+            </div>
+          </motion.div>
+
         </div>
 
-        {/* Trial line */}
+        {/* Bottom statement */}
         <motion.p
           className="text-center text-xs md:text-sm uppercase tracking-[0.3em] text-ash mt-12"
           initial={{ opacity: 0 }}
@@ -261,7 +307,7 @@ export default function TierSection() {
           viewport={{ once: true }}
           transition={{ duration: 0.6, delay: 0.2 }}
         >
-          Experience your first week of The New Standard — free.
+          The New Standard starts with your next decision.
         </motion.p>
       </div>
     </section>
