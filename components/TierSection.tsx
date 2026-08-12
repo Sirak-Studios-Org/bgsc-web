@@ -9,9 +9,12 @@ import { Display } from "./ui";
  *
  * Replace these later with Steph's real URLs.
  */
-const CALENDLY_URL = "https://example.com/steph-calendly";
-const FITBUDD_URL = "https://example.com/steph-fitbudd";
+const CALENDLY_URL =
+  process.env.NEXT_PUBLIC_CALENDLY_URL ?? "";
 
+const FITBUDD_URL =
+  process.env.NEXT_PUBLIC_FITBUDD_URL ?? "";
+  
 export default function TierSection() {
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
