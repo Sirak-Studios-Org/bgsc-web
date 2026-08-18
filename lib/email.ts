@@ -1,7 +1,9 @@
 import { Resend } from "resend";
 
-export const resend = new Resend(process.env.RESEND_API_KEY ?? "");
-export const FROM = process.env.EMAIL_FROM ?? "stephie@badgirlstrength.club";
+export const resend = new Resend((process.env.RESEND_API_KEY ?? "").trim());
+// Values pulled via `vercel env` can arrive with a trailing "\n"; trim so the
+// address is never rejected by the mail provider.
+export const FROM = (process.env.EMAIL_FROM ?? "noreply@badgirlstrength.club").trim();
 
 export async function sendWelcomeEmail(to: string, name: string, recommendedLesson: string) {
   await resend.emails.send({
