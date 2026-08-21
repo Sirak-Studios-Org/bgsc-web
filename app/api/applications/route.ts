@@ -2,6 +2,32 @@ import { NextRequest, NextResponse } from "next/server";
 import { prisma } from "@/lib/db";
 import { sendApplicationNotification } from "@/lib/email/index";
 
+/**
+ * Record the outcome of the notification email against the lead.
+ *
+ * Both outcomes are recorded on purpose. Logging only failures leaves a
+ * notification path that silently stops being called looking healthy, so
+ * the question that actually matters, "when did a notification last
+ * succeed", would have no answer. Writing the event can never fail the
+ * submission: the lead is already saved by the time this runs.
+ */
+async function recordNotificationOutcome(
+  outcome: "sent" | "failed",
+  detail: Record<string, unknown>
+) {
+  try {
+    await prisma.event.create({
+      data: {
+        type: `application_notification_${outcome}`,
+        path: "/api/applications",
+        meta: JSON.stringify(detail),
+      },
+    });
+  } catch (logErr) {
+    console.error("[applications] could not record notification outcome", logErr);
+  }
+}
+
 export async function POST(req: NextRequest) {
   try {
     const body = await req.json();
@@ -43,8 +69,9 @@ export async function POST(req: NextRequest) {
       },
     });
 
-    // Notify the club inbox (Stephie). Never let an email failure fail the
-    // submission — the record is already saved, so we log and move on.
+    // Notify the club inbox (Stephie). An email failure never fails the
+    // submission, because the lead is already saved. It is recorded instead
+    // of swallowed, so a broken notification path is visible.
     try {
       await sendApplicationNotification({
         tier,
@@ -57,8 +84,19 @@ export async function POST(req: NextRequest) {
         whyNow,
         submittedAt: new Date(),
       });
+      await recordNotificationOutcome("sent", {
+        tier,
+        applicant: email.toLowerCase(),
+      });
     } catch (mailErr) {
+      const message =
+        mailErr instanceof Error ? mailErr.message : String(mailErr);
       console.error("[applications] notification email failed", mailErr);
+      await recordNotificationOutcome("failed", {
+        tier,
+        applicant: email.toLowerCase(),
+        error: message,
+      });
     }
 
     return NextResponse.json({ success: true });

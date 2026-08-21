@@ -1,9 +1,21 @@
 import { Resend } from "resend";
 
 export const resend = new Resend((process.env.RESEND_API_KEY ?? "").trim());
-// Values pulled via `vercel env` can arrive with a trailing "\n"; trim so the
-// address is never rejected by the mail provider.
-export const FROM = (process.env.EMAIL_FROM ?? "noreply@badgirlstrength.club").trim();
+
+/**
+ * Sending address for every transactional email.
+ *
+ * The default must be a domain Sirak controls and has verified in Resend.
+ * Until 2026-08-21 it was noreply@badgirlstrength.club, which returns
+ * NXDOMAIN and is verified in no Resend account Sirak can see, so any send
+ * relying on the default was rejected by the provider.
+ *
+ * Values pulled via `vercel env` can arrive with a trailing "\n"; trim so
+ * the address is never rejected by the mail provider.
+ */
+export const FROM = (
+  process.env.EMAIL_FROM ?? "BGSC <bgsc@sirakstudios.com>"
+).trim();
 
 export async function sendWelcomeEmail(to: string, name: string, recommendedLesson: string) {
   await resend.emails.send({
