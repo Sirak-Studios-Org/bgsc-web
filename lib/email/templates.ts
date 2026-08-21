@@ -40,6 +40,59 @@ function btn(href: string, label: string): string {
   return `<a href="${href}" style="display:inline-block;margin-top:24px;padding:14px 28px;background:#e40000;color:#ffffff;font-size:13px;font-weight:700;letter-spacing:0.15em;text-transform:uppercase;text-decoration:none;">${label}</a>`;
 }
 
+function escapeHtml(value: string): string {
+  return value
+    .replace(/&/g, "&amp;")
+    .replace(/</g, "&lt;")
+    .replace(/>/g, "&gt;")
+    .replace(/"/g, "&quot;")
+    .replace(/'/g, "&#39;");
+}
+
+export type ApplicationNotification = {
+  tier: string;
+  name: string;
+  email: string;
+  phone?: string | null;
+  location?: string | null;
+  trainingHistory?: string | null;
+  goals?: string | null;
+  whyNow?: string | null;
+  submittedAt?: Date;
+};
+
+export function applicationNotificationEmailHtml(app: ApplicationNotification): string {
+  const row = (label: string, value?: string | null): string => {
+    const safe = value && value.trim() ? escapeHtml(value.trim()) : "&mdash;";
+    return `
+      <tr>
+        <td style="padding:12px 0;border-bottom:1px solid #1E1E1E;font-size:11px;text-transform:uppercase;letter-spacing:0.15em;color:#8A8A8A;width:150px;vertical-align:top;">${label}</td>
+        <td style="padding:12px 0;border-bottom:1px solid #1E1E1E;font-size:14px;color:#F5F5F3;line-height:1.6;white-space:pre-wrap;">${safe}</td>
+      </tr>`;
+  };
+
+  const submitted = app.submittedAt
+    ? app.submittedAt.toLocaleString("en-US", { timeZone: "America/New_York" })
+    : "";
+
+  return base(`
+    <p style="margin:0 0 4px;font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:0.25em;color:#8F0000;">New Intake Submission</p>
+    <h1 style="margin:0 0 8px;font-size:24px;font-weight:900;color:#F5F5F3;letter-spacing:-0.02em;">${escapeHtml(app.name)}</h1>
+    <p style="margin:0 0 24px;font-size:14px;color:#BFBFBF;line-height:1.7;">A new application came in through the Step-In form on the ${escapeHtml(app.tier)} tier.${submitted ? ` Submitted ${escapeHtml(submitted)} ET.` : ""}</p>
+    <table cellpadding="0" cellspacing="0" width="100%" style="margin:0 0 8px;">
+      ${row("Tier", app.tier)}
+      ${row("Name", app.name)}
+      ${row("Email", app.email)}
+      ${row("Phone", app.phone)}
+      ${row("Location", app.location)}
+      ${row("Training background", app.trainingHistory)}
+      ${row("Goals", app.goals)}
+      ${row("Why now", app.whyNow)}
+    </table>
+    <p style="margin:24px 0 0;font-size:13px;color:#BFBFBF;line-height:1.7;">Reply directly to this email to reach ${escapeHtml(app.name.split(" ")[0] || "the applicant")} at <a href="mailto:${escapeHtml(app.email)}" style="color:#e40000;text-decoration:none;">${escapeHtml(app.email)}</a>.</p>
+  `);
+}
+
 export function welcomeEmailHtml(name: string): string {
   return base(`
     <h1 style="margin:0 0 8px;font-size:26px;font-weight:900;color:#F5F5F3;letter-spacing:-0.02em;">Welcome, ${name} 🔥</h1>

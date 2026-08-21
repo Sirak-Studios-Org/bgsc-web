@@ -81,11 +81,11 @@ export default function CloseSection({ onCta }: { onCta: () => void }) {
             transition={{ duration: 0.7, delay: 0.15 }}
           >
             <Image
-              src="/images/close-triumph.png"
+              src="/images/close-triumph.jpg"
               alt="Step into the new standard"
               fill
               sizes="(max-width: 1024px) 100vw, 50vw"
-              className="object-cover object-top brightness-80 select-none pointer-events-none border border-border"
+              className="object-contain object-center brightness-80 select-none pointer-events-none border border-border"
             />
           </motion.div>
         </div>
