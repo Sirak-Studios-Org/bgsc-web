@@ -97,8 +97,8 @@ export default function TierSection() {
               fontFamily: "var(--font-body, 'Inter', sans-serif)",
             }}
           >
-            Two ways to step into the BGSC standard. Start with your free
-            metabolic assessment, or talk to a coach first.
+            Two ways to step into the BGSC standard. Start with your metabolic
+            assessment, or talk to a coach first.
           </p>
         </motion.div>
 
@@ -125,7 +125,7 @@ export default function TierSection() {
                   "var(--font-display, 'Poppins', sans-serif)",
               }}
             >
-              Free Trial
+              Start Here
             </p>
 
             <h3
@@ -139,12 +139,13 @@ export default function TierSection() {
             </h3>
 
             <p className="text-sm md:text-base font-bold text-soft-white leading-snug mb-4">
-              Get your free metabolic assessment.
+              Know what your body actually needs.
             </p>
 
             <p className="text-sm text-ash leading-relaxed mb-8">
-              Leave your name and email, answer a few questions about where
-              you are today, and your results arrive by email.
+              Answer a few questions about your training, your weight and your
+              goals. Your results come back by email. It takes about two
+              minutes and costs nothing.
             </p>
 
             {status === "confirmed" ? (
@@ -161,7 +162,7 @@ export default function TierSection() {
 
                 <p className="text-sm text-ash mt-3 leading-relaxed">
                   Your assessment is loading now. It takes about two minutes,
-                  and Steph sends your results straight to your inbox.
+                  and your results go straight to your inbox.
                 </p>
 
                 <a
@@ -240,9 +241,7 @@ export default function TierSection() {
                   className="w-full h-[52px] flex items-center justify-center uppercase font-bold text-[11px] md:text-xs tracking-[0.25em] bg-soft-white text-near-black hover:bg-ash transition-all duration-300 cursor-pointer disabled:opacity-60 disabled:cursor-wait"
                   style={{ borderRadius: "2px" }}
                 >
-                  {status === "sending"
-                    ? "Sending"
-                    : "Start My Assessment"}
+                  {status === "sending" ? "Sending" : "Get My Results"}
                 </button>
               </form>
             )}
