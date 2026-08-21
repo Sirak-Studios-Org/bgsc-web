@@ -22,12 +22,22 @@ export const METABOLIC_ASSESSMENT_URL = (
 /**
  * Steph's pre-enrollment call booking page.
  *
- * This value has no default on purpose. `scripts/check-env.mjs` fails the
- * build when it is unset, and that guard is what keeps a dead "Book a
- * Call" button off the live site. The empty fallback below is reached
- * only by a local dev server started without the variable.
+ * The URL lives here rather than only in the Vercel dashboard. Before
+ * 2026-08-20 it lived only in the dashboard, was never actually set, and
+ * silently resolved to an empty string, so production rendered the "Book
+ * a Call" button with href="" and clicking it reloaded the homepage. A
+ * public URL that changes once a year does not belong in invisible
+ * deploy state.
+ *
+ * `NEXT_PUBLIC_CALENDLY_URL` still overrides it for a temporary change.
+ * `scripts/check-env.mjs` fails the build when either this default or
+ * that override stops being a valid https URL.
  */
-export const CALENDLY_URL = (process.env.NEXT_PUBLIC_CALENDLY_URL ?? "").trim();
+export const CALENDLY_URL_DEFAULT =
+  "https://calendly.com/stephie-badgirlstrength";
+
+export const CALENDLY_URL =
+  (process.env.NEXT_PUBLIC_CALENDLY_URL ?? "").trim() || CALENDLY_URL_DEFAULT;
 
 /** Scroll the visitor to the metabolic assessment card. */
 export function scrollToAssessment() {
