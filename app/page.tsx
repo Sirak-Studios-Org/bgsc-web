@@ -1,6 +1,5 @@
 "use client";
 
-import { useRouter } from "next/navigation";
 import HeroSection from "@/components/HeroSection";
 import VideoSection from "@/components/VideoSection";
 import ScrollReveal from "@/components/ScrollReveal";
@@ -13,15 +12,14 @@ import BocaHqSection from "@/components/BocaHqSection";
 import ObjectionsSection from "@/components/ObjectionsSection";
 import CloseSection from "@/components/CloseSection";
 import StickyCtaBar from "@/components/StickyCtaBar";
+import { scrollToAssessment } from "@/lib/links";
 
 export default function VSLPage() {
-  const router = useRouter();
-
-  const goToStepIn = () => router.push("/step-in");
+  const goToAssessment = () => scrollToAssessment();
 
   return (
     <main className="relative overflow-x-hidden">
-      <StickyCtaBar onCta={goToStepIn} />
+      <StickyCtaBar onCta={goToAssessment} />
       <HeroSection />
       <div className="h-8 md:h-20 bg-black" />
       <VideoSection />
@@ -38,11 +36,11 @@ export default function VSLPage() {
       <div className="section-divider" />
       <CultureSection />
       <div className="section-divider" />
-      <BocaHqSection onCta={goToStepIn} />
+      <BocaHqSection onCta={goToAssessment} />
       <div className="section-divider" />
       <ObjectionsSection />
       <div className="section-divider" />
-      <CloseSection onCta={goToStepIn} />
+      <CloseSection onCta={goToAssessment} />
     </main>
   );
 }
