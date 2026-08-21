@@ -1,41 +1,79 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { motion } from "framer-motion";
 import { Display } from "./ui";
+import {
+  ASSESSMENT_ANCHOR_ID,
+  CALENDLY_URL,
+  METABOLIC_ASSESSMENT_URL,
+} from "@/lib/links";
 
-/*
- * TEMPORARY DUMMY LINKS
- *
- * Replace these later with Steph's real URLs.
+/** Time the confirmation state holds before the assessment loads. */
+const REDIRECT_DELAY_MS = 2500;
+
+/**
+ * `scripts/check-env.mjs` fails the build when CALENDLY_URL is unset, so
+ * the fallback below should never render in a deployed build. It exists so
+ * that a local dev server started without the variable sends the visitor
+ * to the assessment rather than to an empty href, which reloads the page.
  */
-const CALENDLY_URL =
-  process.env.NEXT_PUBLIC_CALENDLY_URL ?? "";
+const bookACallHref = CALENDLY_URL || `#${ASSESSMENT_ANCHOR_ID}`;
+const bookACallIsExternal = Boolean(CALENDLY_URL);
 
-const FITBUDD_URL =
-  process.env.NEXT_PUBLIC_FITBUDD_URL ?? "";
-  
 export default function TierSection() {
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
-  const [submitted, setSubmitted] = useState(false);
+  const [status, setStatus] = useState<"idle" | "sending" | "confirmed">("idle");
+  const [error, setError] = useState<string | null>(null);
+  const redirectRef = useRef<number | null>(null);
 
-  function handleJoinSubmit(e: React.FormEvent<HTMLFormElement>) {
+  useEffect(() => {
+    return () => {
+      if (redirectRef.current !== null) {
+        window.clearTimeout(redirectRef.current);
+      }
+    };
+  }, []);
+
+  async function handleAssessmentSubmit(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
+    if (status === "sending") return;
 
-    /*
-     * TEMPORARY:
-     * This currently only shows a success state.
-     *
-     * Later, connect this form to the real lead/application
-     * endpoint so Steph receives the name + email.
-     */
-    console.log("BGSC Join the Club lead:", {
-      name,
-      email,
-    });
+    setStatus("sending");
+    setError(null);
 
-    setSubmitted(true);
+    try {
+      const res = await fetch("/api/applications", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          tier: "metabolic-assessment",
+          name,
+          email,
+        }),
+      });
+
+      if (!res.ok) {
+        const body = await res.json().catch(() => null);
+        throw new Error(
+          body?.error ?? "Something went wrong. Please try again."
+        );
+      }
+    } catch (err) {
+      setStatus("idle");
+      setError(
+        err instanceof Error
+          ? err.message
+          : "Something went wrong. Please try again."
+      );
+      return;
+    }
+
+    setStatus("confirmed");
+    redirectRef.current = window.setTimeout(() => {
+      window.location.assign(METABOLIC_ASSESSMENT_URL);
+    }, REDIRECT_DELAY_MS);
   }
 
   return (
@@ -68,24 +106,25 @@ export default function TierSection() {
               fontFamily: "var(--font-body, 'Inter', sans-serif)",
             }}
           >
-            Three ways to step into the BGSC standard. Start where you are,
-            talk to Steph, or enroll when you&apos;re ready.
+            Two ways to step into the BGSC standard. Start with your free
+            metabolic assessment, or talk to a coach first.
           </p>
         </motion.div>
 
-        {/* Three action cards */}
-        <div className="grid lg:grid-cols-3 gap-6">
+        {/* Action cards */}
+        <div className="grid md:grid-cols-2 gap-6 max-w-4xl">
 
           {/* ========================================================= */}
-          {/* 1. JOIN THE CLUB */}
+          {/* 1. METABOLIC ASSESSMENT */}
           {/* ========================================================= */}
 
           <motion.div
+            id={ASSESSMENT_ANCHOR_ID}
             initial={{ opacity: 0, y: 24 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
             transition={{ duration: 0.5 }}
-            className="relative flex flex-col border border-border bg-near-black p-8"
+            className="relative flex flex-col border border-border bg-near-black p-8 scroll-mt-24"
           >
             <p
               className="text-xs font-bold uppercase tracking-[0.35em] mb-3"
@@ -95,7 +134,7 @@ export default function TierSection() {
                   "var(--font-display, 'Poppins', sans-serif)",
               }}
             >
-              Stay Connected
+              Free Trial
             </p>
 
             <h3
@@ -105,19 +144,19 @@ export default function TierSection() {
                   "var(--font-display, 'Poppins', sans-serif)",
               }}
             >
-              Join the Club
+              Metabolic Assessment
             </h3>
 
             <p className="text-sm md:text-base font-bold text-soft-white leading-snug mb-4">
-              Get closer to the BGSC standard.
+              Get your free metabolic assessment.
             </p>
 
             <p className="text-sm text-ash leading-relaxed mb-8">
-              Leave your details and Steph&apos;s team can follow up with you
-              directly.
+              Leave your name and email, answer a few questions about where
+              you are today, and your results arrive by email.
             </p>
 
-            {submitted ? (
+            {status === "confirmed" ? (
               <div className="mt-auto border border-crimson/50 p-6">
                 <p
                   className="text-sm uppercase tracking-[0.2em] font-bold text-soft-white"
@@ -130,12 +169,20 @@ export default function TierSection() {
                 </p>
 
                 <p className="text-sm text-ash mt-3 leading-relaxed">
-                  Thanks for joining. Steph&apos;s team will be in touch.
+                  Your assessment is loading now. It takes about two minutes,
+                  and Steph sends your results straight to your inbox.
                 </p>
+
+                <a
+                  href={METABOLIC_ASSESSMENT_URL}
+                  className="inline-block text-xs uppercase tracking-[0.2em] font-bold text-crimson mt-4 underline underline-offset-4"
+                >
+                  Open the assessment
+                </a>
               </div>
             ) : (
               <form
-                onSubmit={handleJoinSubmit}
+                onSubmit={handleAssessmentSubmit}
                 className="mt-auto space-y-4"
               >
                 <div>
@@ -149,6 +196,8 @@ export default function TierSection() {
                   <input
                     id="bgsc-name"
                     type="text"
+                    name="name"
+                    autoComplete="name"
                     required
                     value={name}
                     onChange={(e) => setName(e.target.value)}
@@ -168,6 +217,8 @@ export default function TierSection() {
                   <input
                     id="bgsc-email"
                     type="email"
+                    name="email"
+                    autoComplete="email"
                     required
                     value={email}
                     onChange={(e) => setEmail(e.target.value)}
@@ -176,19 +227,38 @@ export default function TierSection() {
                   />
                 </div>
 
+                {error && (
+                  <p
+                    role="alert"
+                    className="text-xs text-crimson leading-relaxed"
+                  >
+                    {error}{" "}
+                    <a
+                      href={METABOLIC_ASSESSMENT_URL}
+                      className="underline underline-offset-4"
+                    >
+                      Continue to the assessment
+                    </a>
+                    .
+                  </p>
+                )}
+
                 <button
                   type="submit"
-                  className="w-full h-[52px] flex items-center justify-center uppercase font-bold text-[11px] md:text-xs tracking-[0.25em] bg-soft-white text-near-black hover:bg-ash transition-all duration-300 cursor-pointer"
+                  disabled={status === "sending"}
+                  className="w-full h-[52px] flex items-center justify-center uppercase font-bold text-[11px] md:text-xs tracking-[0.25em] bg-soft-white text-near-black hover:bg-ash transition-all duration-300 cursor-pointer disabled:opacity-60 disabled:cursor-wait"
                   style={{ borderRadius: "2px" }}
                 >
-                  Join the Club
+                  {status === "sending"
+                    ? "Sending"
+                    : "Start My Assessment"}
                 </button>
               </form>
             )}
           </motion.div>
 
           {/* ========================================================= */}
-          {/* 2. TALK TO STEPH */}
+          {/* 2. TALK TO A COACH */}
           {/* ========================================================= */}
 
           <motion.div
@@ -196,11 +266,11 @@ export default function TierSection() {
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
             transition={{ duration: 0.5, delay: 0.1 }}
-            className="relative flex flex-col border border-crimson lg:scale-[1.02] bg-near-black p-8"
+            className="relative flex flex-col border border-crimson md:scale-[1.02] bg-near-black p-8"
           >
             {/* Highlight */}
             <p className="absolute top-0 left-0 right-0 -translate-y-1/2 mx-auto w-fit px-4 py-1 bg-crimson text-soft-white text-[10px] font-bold uppercase tracking-[0.3em]">
-              Before You Enroll
+              Before You Start
             </p>
 
             <p
@@ -211,7 +281,7 @@ export default function TierSection() {
                   "var(--font-display, 'Poppins', sans-serif)",
               }}
             >
-              Have Questions?
+              Still Deciding
             </p>
 
             <h3
@@ -221,7 +291,7 @@ export default function TierSection() {
                   "var(--font-display, 'Poppins', sans-serif)",
               }}
             >
-              Talk to Steph
+              Talk to a Coach
             </h3>
 
             <p className="text-sm md:text-base font-bold text-soft-white leading-snug mb-4">
@@ -229,73 +299,19 @@ export default function TierSection() {
             </p>
 
             <p className="text-sm text-ash leading-relaxed mb-8">
-              Book a pre-enrollment call with Steph. Get your questions
-              answered and figure out the right next step.
+              Book a pre-enrollment call. Get your questions answered and
+              figure out the next step.
             </p>
 
             <div className="mt-auto">
               <a
-                href={CALENDLY_URL}
-                target="_blank"
-                rel="noopener noreferrer"
+                href={bookACallHref}
+                target={bookACallIsExternal ? "_blank" : undefined}
+                rel={bookACallIsExternal ? "noopener noreferrer" : undefined}
                 className="w-full h-[52px] flex items-center justify-center uppercase font-bold text-[11px] md:text-xs tracking-[0.25em] bg-crimson text-soft-white hover:bg-crimson/85 transition-all duration-300"
                 style={{ borderRadius: "2px" }}
               >
                 Book a Call
-              </a>
-            </div>
-          </motion.div>
-
-          {/* ========================================================= */}
-          {/* 3. ENROLL NOW */}
-          {/* ========================================================= */}
-
-          <motion.div
-            initial={{ opacity: 0, y: 24 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            transition={{ duration: 0.5, delay: 0.2 }}
-            className="relative flex flex-col border border-border bg-near-black p-8"
-          >
-            <p
-              className="text-xs font-bold uppercase tracking-[0.35em] mb-3"
-              style={{
-                color: "var(--crimson)",
-                fontFamily:
-                  "var(--font-display, 'Poppins', sans-serif)",
-              }}
-            >
-              Ready?
-            </p>
-
-            <h3
-              className="text-3xl md:text-4xl font-black uppercase tracking-tight text-soft-white mb-4"
-              style={{
-                fontFamily:
-                  "var(--font-display, 'Poppins', sans-serif)",
-              }}
-            >
-              Enroll Now
-            </h3>
-
-            <p className="text-sm md:text-base font-bold text-soft-white leading-snug mb-4">
-              Step into the standard.
-            </p>
-
-            <p className="text-sm text-ash leading-relaxed mb-8">
-              Ready to get started? Continue your enrollment through the BGSC
-              FitBudd platform.
-            </p>
-
-            <div className="mt-auto">
-              <a
-                href={FITBUDD_URL}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="w-full h-[52px] flex items-center justify-center uppercase font-bold text-[11px] md:text-xs tracking-[0.25em] bg-soft-white text-near-black hover:bg-ash transition-all duration-300"
-                style={{ borderRadius: "2px" }}
-              >
-                Enroll Now
               </a>
             </div>
           </motion.div>

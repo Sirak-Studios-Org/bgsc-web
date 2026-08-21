@@ -3,11 +3,10 @@
 import { useState, useEffect, useRef } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import Image from "next/image";
-import { useRouter } from "next/navigation";
+import { scrollToAssessment } from "@/lib/links";
 
 export default function HeroSection() {
-  const router = useRouter();
-  const goToStepIn = () => router.push("/step-in");
+  const goToAssessment = () => scrollToAssessment();
 
   const [stage, setStage] = useState(0);
   const [pressed, setPressed] = useState(false);
@@ -25,7 +24,7 @@ export default function HeroSection() {
 
   const handleStepInClick = () => {
     if (isHoverDevice()) {
-      goToStepIn();
+      goToAssessment();
       return;
     }
     const elapsed = pressedAtRef.current
@@ -33,7 +32,7 @@ export default function HeroSection() {
       : 0;
     const remaining = Math.max(0, 500 - elapsed);
     window.setTimeout(() => {
-      goToStepIn();
+      goToAssessment();
       setPressed(false);
       pressedAtRef.current = null;
     }, remaining);
@@ -150,7 +149,7 @@ export default function HeroSection() {
             style={{ color: "var(--ash)", fontFamily: "var(--font-body, 'Inter', sans-serif)" }}
           >
             <span className="block text-soft-white tracking-[0.35em] font-bold mb-1">The New Standard</span>
-            <span className="block tracking-[0.2em]">For women who are done playing small.</span>
+            <span className="block tracking-[0.2em]">For women who are putting their fitness first.</span>
           </motion.p>
 
           <motion.button
@@ -171,43 +170,16 @@ export default function HeroSection() {
               </div>
 
               <div className="absolute transition-all duration-500 ease-[cubic-bezier(0.85,0,0.15,1)] scale-50 opacity-0 group-hover:scale-100 group-hover:opacity-100 group-[.is-pressed]:scale-100 group-[.is-pressed]:opacity-100 flex items-center justify-center gap-3 uppercase font-bold text-[10px] md:text-xs tracking-[0.3em] whitespace-nowrap">
-                <span>Step In</span>
+                <span>Start Now</span>
               </div>
             </div>
 
             <span className="relative z-10 font-bold uppercase text-[11px] md:text-xs tracking-[0.25em] transition-opacity duration-300 group-hover:opacity-0 group-[.is-pressed]:opacity-0 whitespace-nowrap">
-             join BGSC with a free trial
+              Free Metabolic Assessment
             </span>
           </motion.button>
         </div>
       </div>
-
-      {/* Scroll cue */}
-      {/* <motion.div
-        onClick={() => document.getElementById("video-section")?.scrollIntoView({ behavior: "smooth" })}
-        className="relative z-10 flex flex-col items-center pb-5 md:pb-7 gap-1.5"
-        initial={{ opacity: 0 }}
-        animate={stage >= 1 ? { opacity: 0.5 } : {}}
-        transition={{ delay: 1.8, duration: 1 }}
-      >
-        <span className="text-xs tracking-[0.4em] uppercase"
-          style={{ color: "#FFFFFF", fontFamily: "var(--font-display, 'Poppins', sans-serif)" }}>
-          Watch
-        </span>
-        <motion.div
-          animate={{ y: [0, 8, 0, 8, 0, 0] }}
-          transition={{ 
-            repeat: Infinity, 
-            duration: 3, 
-            ease: "easeInOut",
-            times: [0, 0.1, 0.2, 0.3, 0.4, 1]
-          }}
-        >
-          <svg width="18" height="10" viewBox="0 0 18 10" fill="none">
-            <polyline points="1,1 9,9 17,1" stroke="white" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round"/>
-          </svg>
-        </motion.div>
-      </motion.div> */}
 
     </section>
   );

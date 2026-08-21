@@ -73,7 +73,7 @@ export default function StickyCtaBar({ onCta }: { onCta: () => void }) {
             {/* Center: Text */}
             <div className="hidden md:flex flex-1 justify-center">
               <p className="text-[10px] md:text-xs font-bold uppercase tracking-[0.25em] text-white/40 whitespace-nowrap">
-                First week free
+                Free metabolic assessment
               </p>
             </div>
 
@@ -102,7 +102,7 @@ export default function StickyCtaBar({ onCta }: { onCta: () => void }) {
                 </div>
 
                 <span className="relative z-10 font-bold uppercase text-[11px] md:text-xs tracking-[0.25em] transition-opacity duration-300 group-hover:opacity-0 group-[.is-pressed]:opacity-0 whitespace-nowrap">
-                  Step In
+                  Get Started
                 </span>
               </motion.button>
             </div>
