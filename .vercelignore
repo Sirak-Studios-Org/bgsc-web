@@ -5,6 +5,9 @@
 android/
 ios/
 
-# Scripts (but keep the build-time migration guard)
+# Scripts. Anything `npm run build` invokes must be un-ignored here, or
+# the deploy fails with MODULE_NOT_FOUND. Measured 2026-08-20:
+# scripts/check-env.mjs passed locally and was missing on Vercel.
 scripts/*
 !scripts/migrate.mjs
+!scripts/check-env.mjs
