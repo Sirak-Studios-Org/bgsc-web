@@ -181,6 +181,33 @@ export default function HeroSection() {
         </div>
       </div>
 
+      {/* Scroll cue */}
+      {/* <motion.div
+        onClick={() => document.getElementById("video-section")?.scrollIntoView({ behavior: "smooth" })}
+        className="relative z-10 flex flex-col items-center pb-5 md:pb-7 gap-1.5"
+        initial={{ opacity: 0 }}
+        animate={stage >= 1 ? { opacity: 0.5 } : {}}
+        transition={{ delay: 1.8, duration: 1 }}
+      >
+        <span className="text-xs tracking-[0.4em] uppercase"
+          style={{ color: "#FFFFFF", fontFamily: "var(--font-display, 'Poppins', sans-serif)" }}>
+          Watch
+        </span>
+        <motion.div
+          animate={{ y: [0, 8, 0, 8, 0, 0] }}
+          transition={{ 
+            repeat: Infinity, 
+            duration: 3, 
+            ease: "easeInOut",
+            times: [0, 0.1, 0.2, 0.3, 0.4, 1]
+          }}
+        >
+          <svg width="18" height="10" viewBox="0 0 18 10" fill="none">
+            <polyline points="1,1 9,9 17,1" stroke="white" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round"/>
+          </svg>
+        </motion.div>
+      </motion.div> */}
+
     </section>
   );
 }
