@@ -103,7 +103,7 @@ export default function TierSection() {
         </motion.div>
 
         {/* Action cards */}
-        <div className="grid md:grid-cols-2 gap-6 max-w-4xl">
+        <div className="grid md:grid-cols-2 gap-6">
 
           {/* ========================================================= */}
           {/* 1. METABOLIC ASSESSMENT */}
