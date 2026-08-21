@@ -12,15 +12,6 @@ import {
 /** Time the confirmation state holds before the assessment loads. */
 const REDIRECT_DELAY_MS = 2500;
 
-/**
- * `scripts/check-env.mjs` fails the build when CALENDLY_URL is unset, so
- * the fallback below should never render in a deployed build. It exists so
- * that a local dev server started without the variable sends the visitor
- * to the assessment rather than to an empty href, which reloads the page.
- */
-const bookACallHref = CALENDLY_URL || `#${ASSESSMENT_ANCHOR_ID}`;
-const bookACallIsExternal = Boolean(CALENDLY_URL);
-
 export default function TierSection() {
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
@@ -305,9 +296,9 @@ export default function TierSection() {
 
             <div className="mt-auto">
               <a
-                href={bookACallHref}
-                target={bookACallIsExternal ? "_blank" : undefined}
-                rel={bookACallIsExternal ? "noopener noreferrer" : undefined}
+                href={CALENDLY_URL}
+                target="_blank"
+                rel="noopener noreferrer"
                 className="w-full h-[52px] flex items-center justify-center uppercase font-bold text-[11px] md:text-xs tracking-[0.25em] bg-crimson text-soft-white hover:bg-crimson/85 transition-all duration-300"
                 style={{ borderRadius: "2px" }}
               >
