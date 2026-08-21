@@ -5,9 +5,9 @@ import Image from "next/image";
 import { Display } from "./ui";
 
 const PERKS = [
-  "Three immersion levels — Independent, Supported, Immersed",
+  "Three immersion levels: Independent, Supported, Immersed",
   "Coached method, structured repetition, real progression",
-  "Active community channel — not a course, a club",
+  "Active community channel. Not a course, a club",
   "Boca Raton HQ for in-person training",
   "Step out anytime. The standard is an invitation.",
 ];
@@ -67,7 +67,7 @@ export default function CloseSection({ onCta }: { onCta: () => void }) {
               </div>
 
               <span className="relative z-10 font-bold uppercase text-[11px] md:text-xs tracking-[0.25em] transition-opacity duration-300 group-hover:opacity-0 whitespace-nowrap">
-                Choose Your Level
+                Get My Results
               </span>
             </motion.button>
           </motion.div>
@@ -81,16 +81,16 @@ export default function CloseSection({ onCta }: { onCta: () => void }) {
             transition={{ duration: 0.7, delay: 0.15 }}
           >
             <Image
-              src="/images/close-triumph.png"
+              src="/images/close-triumph.jpg"
               alt="Step into the new standard"
               fill
               sizes="(max-width: 1024px) 100vw, 50vw"
-              className="object-cover object-top brightness-80 select-none pointer-events-none border border-border"
+              className="object-contain object-center brightness-80 select-none pointer-events-none border border-border"
             />
           </motion.div>
         </div>
 
-        {/* Trial mention — single, understated */}
+        {/* Starting point, single and understated */}
         <motion.div
           className="text-center max-w-2xl mx-auto py-12 mb-8 border-t border-b border-border"
           initial={{ opacity: 0, y: 20 }}
@@ -99,13 +99,14 @@ export default function CloseSection({ onCta }: { onCta: () => void }) {
           transition={{ duration: 0.6 }}
         >
           <p className="text-[11px] tracking-[0.3em] uppercase mb-3 font-bold text-crimson">
-            Trial Invitation
+            Where It Starts
           </p>
           <p className="text-lg md:text-xl font-bold uppercase tracking-tight text-soft-white leading-snug">
-            Experience your first week of The New Standard — free.
+            Every standard starts with knowing your numbers.
           </p>
           <p className="text-xs text-ash mt-4 leading-relaxed">
-            Step out anytime in the first seven days. No friction. No questions.
+            The metabolic assessment takes about two minutes. Your results come
+            back by email. No card, no commitment.
           </p>
         </motion.div>
 

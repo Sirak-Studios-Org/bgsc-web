@@ -4,11 +4,12 @@
   "private": true,
   "scripts": {
     "dev": "next dev",
-    "build": "prisma generate && node scripts/migrate.mjs && next build",
+    "build": "node scripts/check-env.mjs && prisma generate && node scripts/migrate.mjs && next build",
     "migrate": "prisma migrate deploy",
     "start": "next start",
     "lint": "eslint",
-    "postinstall": "prisma generate"
+    "postinstall": "prisma generate",
+    "check-env": "node scripts/check-env.mjs"
   },
   "dependencies": {
     "@aws-sdk/client-s3": "^3.1051.0",

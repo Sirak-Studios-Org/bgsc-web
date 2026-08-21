@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { prisma } from "@/lib/db";
+import { sendApplicationNotification } from "@/lib/email/index";
 
 export async function POST(req: NextRequest) {
   try {
@@ -41,6 +42,24 @@ export async function POST(req: NextRequest) {
         whyNow,
       },
     });
+
+    // Notify the club inbox (Stephie). Never let an email failure fail the
+    // submission — the record is already saved, so we log and move on.
+    try {
+      await sendApplicationNotification({
+        tier,
+        name,
+        email: email.toLowerCase(),
+        phone,
+        location,
+        trainingHistory,
+        goals,
+        whyNow,
+        submittedAt: new Date(),
+      });
+    } catch (mailErr) {
+      console.error("[applications] notification email failed", mailErr);
+    }
 
     return NextResponse.json({ success: true });
   } catch (err) {
